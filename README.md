@@ -7,4 +7,8 @@ ef þú átt klúbb þá getur þú skráð þig á vefsíðuna og breitt gögnu
 
 meira mun vera sett i framtiðarskoðun vefsíðurnar
 ![0](https://github.com/user-attachments/assets/4f7133d7-8d94-4579-a9c8-8a8cb526a211)
-![0](https://github.com/user-attachments/assets/e2e0beab-200e-4c1f-bca7-4c415f1b8740)
+
+## 1. as a student, I Want to know when klúbbakvöld is, So i can show up.
+## 2. as a user, I want to speak to a council member, So i can start a club.
+## 3. as a club owner, I want to manage my club, So i can change classrooms.
+## 4. as a DM, I want to manage my members, so i can approve sertain members.
