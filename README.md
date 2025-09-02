@@ -17,4 +17,4 @@ meira mun vera sett i framtiðarskoðun vefsíðurnar
 ### 5. As a parent/public user, I want to know what clubs are available, so my child can fond common interests.
 
 
-![0](https://github.com/user-attachments/assets/4f7133d7-8d94-4579-a9c8-8a8cb526a211)
+<img width="1879" height="1318" alt="Untitled" src="https://github.com/user-attachments/assets/3e7a21bf-d72f-49e7-b277-272054904df7" />
