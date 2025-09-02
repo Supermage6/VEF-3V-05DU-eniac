@@ -14,7 +14,7 @@ meira mun vera sett i framtiðarskoðun vefsíðurnar
 ### 2. as a user, I want to speak to a council member, So i can start a club.
 ### 3. as a club owner, I want to manage my club, So i can change classrooms.
 ### 4. as a DM, I want to manage my members, so i can approve sertain members.
-### 5. As a parent, I want to know what clubs are available, so my child can fond common interests.
+### 5. As a parent/public user, I want to know what clubs are available, so my child can fond common interests.
 
 
 ![0](https://github.com/user-attachments/assets/4f7133d7-8d94-4579-a9c8-8a8cb526a211)
