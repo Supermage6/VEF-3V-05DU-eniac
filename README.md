@@ -10,14 +10,14 @@ ef þú átt klúbb þá getur þú skráð þig á vefsíðuna og breitt gögnu
 
 meira mun vera sett i framtiðarskoðun vefsíðurnar
 
-#user storys
+# user storys
 
-### 1. as a student, I Want to know when klúbbakvöld is, So i can show up.
-### 2. as a user, I want to speak to a council member, So i can start a club.
-### 3. as a club owner, I want to manage my club, So i can change classrooms.
-### 4. as a DM, I want to manage my members, so i can approve sertain members.
+### 1. As a student, I want to know when klúbbakvöld is, so I can show up.
+### 2. As a user, I want to speak to a council member, so I can start a club.
+### 3. As a club owner, I want to manage my club, so I can change classrooms.
+### 4. As a DM, I want to manage my members, so I can approve certain members.
 ### 5. As a parent/public user, I want to know what clubs are available, so my child can find common interests.
 
-#wireframe
+# wireframe
 
 <img width="1879" height="1318" alt="Untitled" src="https://github.com/user-attachments/assets/3e7a21bf-d72f-49e7-b277-272054904df7" />
