@@ -10,13 +10,13 @@ ef þú átt klúbb þá getur þú skráð þig á vefsíðuna og breitt gögnu
 
 meira mun vera sett i framtiðarskoðun vefsíðurnar
 
-# user storys
+# User stories
 
 ### 1. As a student, I want to know when klúbbakvöld is, so I can show up.
 ### 2. As a user, I want to speak to a council member, so I can start a club.
 ### 3. As a club owner, I want to manage my club, so I can change classrooms.
 ### 4. As a DM, I want to manage my members, so I can approve certain members.
-### 5. As a parent/public user, I want to know what clubs are available, so my child can find common interests.
+### 5. As a parent/public user, I want to know what clubs are available, so my child/I can find common interests.
 
 # wireframe
 
