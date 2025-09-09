@@ -20,6 +20,10 @@ def home():
 def klubbar():
     return render_template('klubbar.html', k = klubbar)
 
+@app.route('/dagskra')
+def dagskra():
+    return render_template('dagskra.html')
+
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html')
