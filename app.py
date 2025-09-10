@@ -2,7 +2,7 @@ from flask import Flask, render_template
 
 app = Flask(__name__)
 
-klubbar = [
+klubbar_list = [
     {'nafn': 'Fighting Game Klúbbur', 'stofa': '203', 'formadur': 'Matt', 'desc': 'Klúbbur fyrir alla sem hafa áhuga á bardaga tölvuleikjum.'},
     {'nafn': 'Furry Klúbbur', 'stofa': '206', 'formadur': 'Aron', 'desc': 'Klúbbur fyrir alla sem hafa áhuga á furry menningu.'},
     {'nafn': 'Tónlistarklúbbur', 'stofa': 'Hátíðarsalur', 'formadur': 'Emily', 'desc': 'Klúbbur fyrir alla sem hafa áhuga á tónlist og spilamennsku.'},
@@ -18,7 +18,7 @@ def home():
 
 @app.route('/klubbar')
 def klubbar():
-    return render_template('klubbar.html', k = klubbar)
+    return render_template('klubbar.html', k = klubbar_list)
 
 @app.route('/dagskra')
 def dagskra():
