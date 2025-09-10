@@ -21,3 +21,4 @@ meira mun vera sett i framtiðarskoðun vefsíðurnar
 # wireframe
 
 <img width="1879" height="1318" alt="Untitled" src="https://github.com/user-attachments/assets/3e7a21bf-d72f-49e7-b277-272054904df7" />
+<img width="467" height="925" alt="image" src="https://github.com/user-attachments/assets/aedbd44c-c392-4f17-85e8-d566e7e1c83e" />
