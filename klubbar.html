@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Klúbbar</title>
+</head>
+<body>
+    <h1>Klúbbar</h1>
+    {% for i in k %}
+        <h2>{{ i.nafn }}</h2>
+        <p>Stofa: {{ i.stofa }}</p>
+        <p>Formaður: {{ i.formadur }}</p>
+        <p>{{ i.desc }}</p>
+        <hr>
+    {% endfor %}
+</body>
+</html>
