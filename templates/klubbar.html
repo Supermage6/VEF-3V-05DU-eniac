@@ -7,7 +7,6 @@
 </head>
 <style>
     .accordion {
-        background-color: #eee;
         color: #444;
         cursor: pointer;
         padding: 18px;
@@ -18,7 +17,7 @@
         font-size: 15px;
         transition: 0.4s;
     }
-    
+  
     .active, .accordion:hover {
         background-color: #ccc;
     }
@@ -29,11 +28,9 @@
         background-color: white;
         overflow: hidden;
     }
-
 </style>
 <body>
     <h1>Klúbbar</h1>
-
     {% for i in k %}
         <button class="accordion">{{ i.nafn }}</button>
         <div class="panel">
