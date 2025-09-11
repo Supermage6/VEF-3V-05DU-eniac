@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for
 
 app = Flask(__name__)
 
@@ -23,6 +23,12 @@ def klubbar():
 @app.route('/dagskra')
 def dagskra():
     return render_template('dagskra.html')
+
+@app.route('/login', methods=['POST'])
+def login():
+    # Placeholder handler — validate credentials here if needed
+    _ = request.form.get('username'), request.form.get('password')
+    return redirect(url_for('home'))
 
 @app.errorhandler(404)
 def page_not_found(e):
