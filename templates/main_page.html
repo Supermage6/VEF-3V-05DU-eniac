@@ -13,8 +13,15 @@
     .header-actions { margin-left: auto; display: flex; align-items: center; gap: 12px; }
     nav { display: flex; gap: 12px; }
     nav a { text-decoration: none; color: inherit; padding: 4px 8px; border-radius: 6px; }
-    .btn { appearance: none; border: 1px solid #333; background: #111; color: #fff; padding: 6px 12px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: .95rem; }
+    .btn { appearance: none; border: 1px solid #333; background: #111; color: #fff; padding: 6px 12px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: .95rem; cursor: pointer; }
     .btn:hover { background: #000; }
+    .btn.small { padding: 4px 10px; font-size: .85rem; }
+    .profile-wrap { position: relative; }
+    .profile-pill { background: #111; color: #fff; border-radius: 999px; padding: 6px 10px; font-weight: 700; letter-spacing: .06em; min-width: 36px; text-align: center; border: 0; cursor: pointer; }
+    .profile-menu { position: absolute; right: 0; top: calc(100% + 6px); background: #fff; border: 1px solid #ddd; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,.15); min-width: 160px; overflow: hidden; opacity: 0; transform: translateY(-6px) scale(.98); transform-origin: top right; pointer-events: none; transition: opacity .16s ease, transform .16s ease; }
+    .profile-wrap.open .profile-menu { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+    .profile-item { display: block; width: 100%; padding: 10px 12px; text-align: left; background: #fff; border: 0; cursor: pointer; font-weight: 600; }
+    .profile-item:hover { background: #f5f5f5; }
     main { max-width: var(--max); margin: 0 auto; padding: var(--gap); display: flex; flex-direction: column; gap: var(--gap); }
     section { padding: 12px; border: 1px solid #ddd; border-radius: 8px; }
     section h2 { margin: 0 0 8px; font-size: 1.1rem; }
@@ -46,7 +53,18 @@
         <a href="{{ url_for('klubbar') }}">Clubs</a>
         <a href="{{ url_for('dagskra') }}">Schedule</a>
       </nav>
-      <a id="loginBtn" class="btn" href="#login" aria-label="Log in">Log in</a>
+      {% if session.get('user') %}
+        <div class="profile-wrap">
+          <button id="profileBtn" class="profile-pill" aria-haspopup="menu" aria-expanded="false" title="{{ session['user'] }}">{{ session['user'][:3]|upper }}</button>
+          <div id="profileMenu" class="profile-menu" role="menu" aria-label="Profile menu">
+            <form method="post" action="{{ url_for('logout') }}">
+              <button class="profile-item" type="submit" role="menuitem">Log out</button>
+            </form>
+          </div>
+        </div>
+      {% else %}
+        <a id="loginBtn" class="btn" href="#login" aria-label="Log in">Log in</a>
+      {% endif %}
     </div>
   </header>
 
@@ -68,6 +86,7 @@
           <input name="password" type="password" autocomplete="current-password" required>
         </label>
         <div class="modal-actions">
+          <a class="btn small secondary" href="{{ url_for('register') }}">Create account</a>
           <button class="btn secondary" type="button" data-close="true">Cancel</button>
           <button class="btn" type="submit">Log in</button>
         </div>
@@ -106,6 +125,8 @@
     (function(){
       const openBtn = document.getElementById('loginBtn');
       const modal = document.getElementById('loginModal');
+      const profileBtn = document.getElementById('profileBtn');
+      const profileWrap = profileBtn ? profileBtn.closest('.profile-wrap') : null;
       let lastFocused = null;
 
       function openModal(e){
@@ -121,13 +142,32 @@
         modal.setAttribute('aria-hidden', 'true');
         if (lastFocused && typeof lastFocused.focus === 'function') lastFocused.focus();
       }
-      openBtn.addEventListener('click', openModal);
+      if (openBtn) openBtn.addEventListener('click', openModal);
       modal.addEventListener('click', (e)=>{
         if (e.target.dataset.close === 'true') closeModal();
       });
       document.addEventListener('keydown', (e)=>{
-        if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+        if (e.key === 'Escape') {
+          if (modal.classList.contains('open')) closeModal();
+          if (profileWrap && profileWrap.classList.contains('open')) toggleProfile(false);
+        }
       });
+
+      function toggleProfile(forceState){
+        if (!profileWrap) return;
+        const isOpen = typeof forceState === 'boolean' ? forceState : !profileWrap.classList.contains('open');
+        profileWrap.classList.toggle('open', isOpen);
+        profileBtn.setAttribute('aria-expanded', String(isOpen));
+      }
+      if (profileBtn) {
+        profileBtn.addEventListener('click', (e)=>{
+          e.preventDefault();
+          toggleProfile();
+        });
+        document.addEventListener('click', (e)=>{
+          if (!profileWrap.contains(e.target)) toggleProfile(false);
+        });
+      }
     })();
   </script>
 </body>
