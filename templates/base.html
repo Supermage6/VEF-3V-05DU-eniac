@@ -16,6 +16,8 @@
     .btn { appearance: none; border: 1px solid #333; background: #111; color: #fff; padding: 6px 12px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: .95rem; cursor: pointer; }
     .btn:hover { background: #000; }
     .btn.small { padding: 4px 10px; font-size: .85rem; }
+    .btn.secondary { background: #fff; color: #111; border-color: #999; }
+    .btn.secondary:hover { background: #f4f4f4; }
     .profile-wrap { position: relative; }
     .profile-pill { background: #111; color: #fff; border-radius: 999px; padding: 6px 10px; font-weight: 700; letter-spacing: .06em; min-width: 36px; text-align: center; border: 0; cursor: pointer; }
     .profile-menu { position: absolute; right: 0; top: calc(100% + 6px); background: #fff; border: 1px solid #ddd; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,.15); min-width: 160px; overflow: hidden; opacity: 0; transform: translateY(-6px) scale(.98); transform-origin: top right; pointer-events: none; transition: opacity .16s ease, transform .16s ease; }
@@ -40,9 +42,8 @@
     .field { display: grid; gap: 6px; margin: 10px 0; }
     .field input { padding: 10px 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 1rem; }
     .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px; }
-    .btn.secondary { background: #fff; color: #111; border-color: #999; }
-    .btn.secondary:hover { background: #f4f4f4; }
   </style>
+  {% block head_extra %}{% endblock %}
 </head>
 <body>
   <header>
@@ -95,28 +96,7 @@
   </div>
 
   <main>
-    <section aria-labelledby="welcome">
-      <h2 id="welcome">Welcome</h2>
-      <p>This is the ENIAC front page. Sign in and other features will be added later.</p>
-    </section>
-
-    <section aria-labelledby="announcements">
-      <h2 id="announcements">Announcements</h2>
-      <ul>
-        <li>Placeholder announcement one.</li>
-        <li>Placeholder announcement two.</li>
-        <li>Placeholder announcement three.</li>
-      </ul>
-    </section>
-
-    <section aria-labelledby="events">
-      <h2 id="events">Upcoming</h2>
-      <ul>
-        <li>Event A — 12:00</li>
-        <li>Event B — 15:00</li>
-        <li>Event C — 18:00</li>
-      </ul>
-    </section>
+    {% block content %}{% endblock %}
   </main>
 
   <footer>© 2025 ENIAC</footer>
@@ -170,6 +150,7 @@
       }
     })();
   </script>
+  {% block body_end %}{% endblock %}
 </body>
 </html>
 

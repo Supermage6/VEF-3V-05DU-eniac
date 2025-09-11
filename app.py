@@ -34,7 +34,7 @@ klubbar_list = [
 
 @app.route('/')
 def home():
-    return render_template('main_page.html')
+    return render_template('index.html')
 
 @app.route('/klubbar')
 def klubbar():
