@@ -1,0 +1,65 @@
+:root { --gap: 16px; --max: 720px; }
+* { box-sizing: border-box; }
+body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; line-height: 1.5; }
+header { padding: var(--gap); border-bottom: 1px solid #ddd; display: flex; align-items: center; }
+.brand { font-size: 1.8rem; font-weight: 700; letter-spacing: .04em; }
+.header-actions { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+nav { display: flex; gap: 12px; }
+nav a { text-decoration: none; color: inherit; padding: 4px 8px; border-radius: 6px; }
+.btn { appearance: none; border: 1px solid #333; background: #111; color: #fff; padding: 6px 12px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: .95rem; }
+.btn:hover { background: #000; }
+main { max-width: var(--max); margin: 0 auto; padding: var(--gap); display: flex; flex-direction: column; gap: var(--gap); }
+section { padding: 12px; border: 1px solid #ddd; border-radius: 8px; }
+section h2 { margin: 0 0 8px; font-size: 1.1rem; }
+ul { margin: 0; padding-left: 18px; }
+footer { padding: var(--gap); text-align: center; font-size: .9rem; color: #555; border-top: 1px solid #eee; }
+
+/* Login modal */
+.modal { position: fixed; inset: 0; display: none; z-index: 1000; }
+.modal.open { display: block; }
+.modal-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,.5); }
+.modal-dialog { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    width: min(420px, 92vw); background: #fff; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,.25); padding: 20px; }
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.modal-title { margin: 0; font-size: 1.25rem; }
+.modal-close { border: none; background: transparent; font-size: 1.4rem; line-height: 1; cursor: pointer; padding: 4px 8px; }
+.field { display: grid; gap: 6px; margin: 10px 0; }
+.field input { padding: 10px 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 1rem; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px; }
+.btn.secondary { background: #fff; color: #111; border-color: #999; }
+.btn.secondary:hover { background: #f4f4f4; }
+
+/* Klubbar page */
+.accordion {
+    color: #444;
+    cursor: pointer;
+    padding: 18px;
+    width: 70%;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 15px;
+    transition: 0.4s;
+}
+
+.stofna {
+    color: #444;
+    cursor: pointer;
+    padding: 18px;
+    width: 70%;
+    border: none;
+    text-align: left;
+    font-size: 15px;
+}
+
+.active, .accordion:hover {
+    background-color: #ccc;
+}
+
+.panel {
+    padding: 0 18px;
+    display: none;
+    background-color: white;
+    overflow: hidden;
+}
+

@@ -1,44 +1,40 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Klúbbar</title>
-</head>
-<style>
-    .accordion {
-        color: #444;
-        cursor: pointer;
-        padding: 18px;
-        width: 100%;
-        border: none;
-        text-align: left;
-        outline: none;
-        font-size: 15px;
-        transition: 0.4s;
-    }
-  
-    .active, .accordion:hover {
-        background-color: #ccc;
-    }
-
-    .panel {
-        padding: 0 18px;
-        display: none;
-        background-color: white;
-        overflow: hidden;
-    }
-</style>
+{% extends "base.html" %}
+{% block title %}KLÚBBAR{% endblock %}
+{% block content %}
 <body>
-    <h1>Klúbbar</h1>
-    {% for i in k %}
-        <button class="accordion">{{ i.nafn }}</button>
-        <div class="panel">
-            <p>Stofa: {{ i.stofa }}</p>
-            <p>Formaður: {{ i.formadur }}</p>
-            <p>{{ i.desc }}</p>
+    <div style="display: grid; grid-template-columns: 1fr 1fr;">
+        <div>
+            <h1>Klúbbar</h1>
+            {% for i in k %}
+            <button class="accordion">{{ i.nafn }}</button>
+            <div class="panel">
+                <p>Stofa: {{ i.stofa }}</p>
+                <p>Formaður: {{ i.formadur }}</p>
+                <p>{{ i.desc }}</p>
+            </div>
+            {% endfor %}
+            <button class="stofna">Stofna klúbb +</button>
         </div>
-    {% endfor %}
+        <div>
+            <h1>Stofur</h1>
+            <div style="border: 1px solid black; width: 600px; height: 400px; overflow: auto;">
+                placeholder
+            </div>
+            <button>hæð 2</button> <button>hæð 3</button>
+        </div>
+    </div>
 </body>
-
+    for (i = 0; i < acc.length; i++) {
+        acc[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            var panel = this.nextElementSibling;
+            if (panel.style.display === "block") {
+                panel.style.display = "none";
+            } else {
+                panel.style.display = "block";
+            }
+        });
+    }
+</script>
+{% endblock %}
 </html>
