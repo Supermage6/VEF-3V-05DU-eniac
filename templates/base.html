@@ -15,11 +15,25 @@
         <a href="{{ url_for('klubbar') }}">Clubs</a>
         <a href="{{ url_for('dagskra') }}">Schedule</a>
       </nav>
-      <a id="loginBtn" class="btn" href="#login" aria-label="Log in">Log in</a>
+
+      {% if session.get('user') %}
+        <div class="profile-wrap">
+          <button id="profileBtn" class="profile-pill" aria-haspopup="menu" aria-expanded="false" title="{{ session['user'] }}">{{ session['user'][:3]|upper }}</button>
+          <div id="profileMenu" class="profile-menu" role="menu" aria-label="Profile menu">
+            <form method="post" action="{{ url_for('logout') }}">
+              <button class="profile-item" type="submit" role="menuitem">Log out</button>
+            </form>
+          </div>
+        </div>
+      {% else %}
+        <a id="loginBtn" class="btn" href="#login" aria-label="Log in">Log in</a>
+      {% endif %}
     </div>
   </header>
 
-    <div id="loginModal" class="modal" aria-hidden="true">
+  <!-- Login Modal -->
+  <div id="loginModal" class="modal" aria-hidden="true">
+
     <div class="modal-backdrop" data-close="true"></div>
     <div class="modal-dialog" role="dialog" aria-labelledby="loginTitle" aria-modal="true">
       <div class="modal-header">
@@ -46,33 +60,57 @@
   {% block content %}{% endblock %}
 
   <footer>© 2025 ENIAC</footer>
-</body>
-<script>
-  (function(){
-    const openBtn = document.getElementById('loginBtn');
-    const modal = document.getElementById('loginModal');
-    let lastFocused = null;
 
-    function openModal(e){
-      if (e) e.preventDefault();
-      lastFocused = document.activeElement;
-      modal.classList.add('open');
-      modal.setAttribute('aria-hidden', 'false');
-      const user = modal.querySelector('input[name="username"]');
-      if (user) user.focus();
-    }
-    function closeModal(){
-      modal.classList.remove('open');
-      modal.setAttribute('aria-hidden', 'true');
-      if (lastFocused && typeof lastFocused.focus === 'function') lastFocused.focus();
-    }
-    openBtn.addEventListener('click', openModal);
-    modal.addEventListener('click', (e)=>{
-      if (e.target.dataset.close === 'true') closeModal();
-    });
-    document.addEventListener('keydown', (e)=>{
-      if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
-    });
-  })();
-</script>
+  <script>
+    (function(){
+      const openBtn = document.getElementById('loginBtn');
+      const modal = document.getElementById('loginModal');
+      const profileBtn = document.getElementById('profileBtn');
+      const profileWrap = profileBtn ? profileBtn.closest('.profile-wrap') : null;
+      let lastFocused = null;
+
+      function openModal(e){
+        if (e) e.preventDefault();
+        lastFocused = document.activeElement;
+        modal.classList.add('open');
+        modal.setAttribute('aria-hidden', 'false');
+        const user = modal.querySelector('input[name="username"]');
+        if (user) user.focus();
+      }
+      function closeModal(){
+        modal.classList.remove('open');
+        modal.setAttribute('aria-hidden', 'true');
+        if (lastFocused && typeof lastFocused.focus === 'function') lastFocused.focus();
+      }
+      if (openBtn) openBtn.addEventListener('click', openModal);
+      modal.addEventListener('click', (e)=>{
+        if (e.target.dataset.close === 'true') closeModal();
+      });
+      document.addEventListener('keydown', (e)=>{
+        if (e.key === 'Escape') {
+          if (modal.classList.contains('open')) closeModal();
+          if (profileWrap && profileWrap.classList.contains('open')) toggleProfile(false);
+        }
+      });
+
+      function toggleProfile(forceState){
+        if (!profileWrap) return;
+        const isOpen = typeof forceState === 'boolean' ? forceState : !profileWrap.classList.contains('open');
+        profileWrap.classList.toggle('open', isOpen);
+        profileBtn.setAttribute('aria-expanded', String(isOpen));
+      }
+      if (profileBtn) {
+        profileBtn.addEventListener('click', (e)=>{
+          e.preventDefault();
+          toggleProfile();
+        });
+        document.addEventListener('click', (e)=>{
+          if (!profileWrap.contains(e.target)) toggleProfile(false);
+        });
+      }
+    })();
+  </script>
+</body>
 </html>
+
+

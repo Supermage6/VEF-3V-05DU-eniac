@@ -1,0 +1,8 @@
+{
+  "supermage": {
+    "password_hash": "scrypt:32768:8:1$I0jG1YBDQMgbFMgk$ed58d7cfe214a9f2a0e0209bf33fe66fb5a4d160d6704002bcab9fe9f3ffc2ff3ba3c9bc1c0c938944cf2501ecb0f6ca3e81408f650891d123591818cecad5f4"
+  },
+  "alex": {
+    "password_hash": "scrypt:32768:8:1$aLaSGY1HKq3XKSYu$4579c6688abeb1eaa3e76987a09fea1a1ee46cafc7c69637aa9f275e233f65d97df5a72f8f18b01859d83e342a82723ed97e10f19b9a6d60cb58b11852305210"
+  }
+}
