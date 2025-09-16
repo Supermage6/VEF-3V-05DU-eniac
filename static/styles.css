@@ -30,6 +30,11 @@ footer { padding: var(--gap); text-align: center; font-size: .9rem; color: #555;
 .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px; }
 .btn.secondary { background: #fff; color: #111; border-color: #999; }
 .btn.secondary:hover { background: #f4f4f4; }
+.create-user-inline { display:flex; gap:8px; align-items:center; margin-left: 8px; }
+.remove-user-inline { display:flex; gap:8px; align-items:center; margin-left: 8px; }
+.admin-user-tools { display:flex; flex-direction: column; gap: 6px; }
+.btn.danger { background: #b00020; border-color: #b00020; color: #fff; }
+.btn.danger:hover { background: #8c001a; }
 
 /* Klubbar page */
 .accordion {

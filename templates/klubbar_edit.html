@@ -1,5 +1,22 @@
 {% extends "base.html" %}
 {% block title %}Edit Clubs{% endblock %}
+{% block header_auth %}
+  <div class="admin-user-tools">
+    <form class="create-user-inline" method="post" action="{{ url_for('admin_create_user') }}">
+      <input type="text" name="username" placeholder="New username" required style="padding:6px 10px; border:1px solid #ccc; border-radius:8px;">
+      <input type="password" name="password" placeholder="Password" required style="padding:6px 10px; border:1px solid #ccc; border-radius:8px;">
+      <select name="role" style="padding:6px 10px; border:1px solid #ccc; border-radius:8px;">
+        <option value="student">Student</option>
+        <option value="admin">Admin</option>
+      </select>
+      <button class="btn" type="submit">Create user</button>
+    </form>
+    <form class="remove-user-inline" method="post" action="{{ url_for('admin_remove_user') }}">
+      <input type="text" name="username" placeholder="Username to remove" required style="padding:6px 10px; border:1px solid #ccc; border-radius:8px;">
+      <button class="btn danger" type="submit" onclick="return confirm('Remove this user?');">Remove user</button>
+    </form>
+  </div>
+{% endblock %}
 {% block content %}
   <h1>Edit Clubs</h1>
   <form method="post" action="{{ url_for('klubbar_edit') }}" style="display:grid; gap:16px; max-width:720px;">
@@ -30,4 +47,3 @@
     </div>
   </form>
 {% endblock %}
-

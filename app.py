@@ -83,6 +83,49 @@ def klubbar_edit():
         return redirect(url_for('klubbar'))
     return render_template('klubbar_edit.html', k=clubs)
 
+
+@app.route('/admin/create_user', methods=['POST'])
+@require_roles(ROLE_ADMIN)
+def admin_create_user():
+    username = (request.form.get('username') or '').strip()
+    password = request.form.get('password') or ''
+    role = (request.form.get('role') or ROLE_STUDENT).strip().lower()
+
+    error = None
+    if not username or not password:
+        error = 'Username and password are required.'
+    elif role not in {ROLE_STUDENT, ROLE_ADMIN}:
+        error = 'Invalid role.'
+    else:
+        users = _load_users()
+        if username in users:
+            error = 'Username already exists.'
+        else:
+            users[username] = {
+                'password_hash': generate_password_hash(password),
+                'role': role,
+            }
+            _save_users(users)
+            return redirect(url_for('klubbar_edit'))
+
+    # On error, just bounce back for now. Could flash error.
+    return redirect(url_for('klubbar_edit'))
+
+@app.route('/admin/remove_user', methods=['POST'])
+@require_roles(ROLE_ADMIN)
+def admin_remove_user():
+    username = (request.form.get('username') or '').strip()
+    if not username:
+        return redirect(url_for('klubbar_edit'))
+    # Avoid removing yourself from within the UI
+    if session.get('user') and session['user'].lower() == username.lower():
+        return redirect(url_for('klubbar_edit'))
+    users = _load_users()
+    if username in users:
+        users.pop(username)
+        _save_users(users)
+    return redirect(url_for('klubbar_edit'))
+
 @app.route('/dagskra')
 def dagskra():
     return render_template('dagskra.html')
@@ -95,15 +138,16 @@ def login():
     users = _load_users()
     record = users.get(username)
     if record and check_password_hash(record.get('password_hash', ''), password):
-        # Role: knut is admin, others are student by default
-        new_role = ROLE_ADMIN if username.lower() == 'knut' else ROLE_STUDENT
-        if record.get('role') != new_role:
-            record['role'] = new_role
+        # Respect stored role if present; if missing, infer default
+        stored_role = record.get('role')
+        if not stored_role:
+            stored_role = ROLE_ADMIN if username.lower() == 'knut' else ROLE_STUDENT
+            record['role'] = stored_role
             users[username] = record
             _save_users(users)
         session['user'] = username
-        session['role'] = new_role
-        session['display_name'] = 'admin' if new_role == ROLE_ADMIN else username
+        session['role'] = stored_role
+        session['display_name'] = 'admin' if stored_role == ROLE_ADMIN else username
     # On failure, silently fall through to home. Could add errors if desired.
     return redirect(url_for('home'))
 

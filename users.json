@@ -9,5 +9,9 @@
   "knut": {
     "password_hash": "scrypt:32768:8:1$o1BcJKF9AYdpLian$4e99b2c634cf624466a45e0abea029df45feec7d2bd5f5cd7ab7a4f0fd5729a4886c45c5e3c403d0e244d9b4c6f7fad3d7caf7ed334693b0e567989031cea935",
     "role": "admin"
+  },
+  "Tomas": {
+    "password_hash": "scrypt:32768:8:1$gv9q21A3yH3LPTrf$c0ec3f1ee6912c4d07abae163c3a722b4cba74ffcf7d19e444bcdfde6bc234d09bd7b835700c65a88a65ef70041ab171ccf29f741b8df31803dfd2f440443094",
+    "role": "admin"
   }
 }
