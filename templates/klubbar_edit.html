@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Edit Clubs{% endblock %}
+{% block content %}
+  <h1>Edit Clubs</h1>
+  <form method="post" action="{{ url_for('klubbar_edit') }}" style="display:grid; gap:16px; max-width:720px;">
+    {% for i in range(k|length) %}
+      {% set c = k[i] %}
+      <fieldset style="border:1px solid #ddd; border-radius:8px; padding:12px;">
+        <legend>Club #{{ i + 1 }}</legend>
+        <div class="field">
+          <label>
+            <div>Name</div>
+            <input type="text" name="name_{{ i }}" value="{{ c.nafn }}" required />
+          </label>
+        </div>
+        <div class="field">
+          <label>
+            <div>Description</div>
+            <textarea name="desc_{{ i }}" rows="3" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px;">{{ c.desc }}</textarea>
+          </label>
+        </div>
+        <div style="color:#666; font-size:.9rem;">
+          Room: {{ c.stofa }} • Leader: {{ c.formadur }}
+        </div>
+      </fieldset>
+    {% endfor %}
+    <div style="display:flex; gap:10px;">
+      <button class="btn" type="submit">Save changes</button>
+      <a class="btn secondary" href="{{ url_for('klubbar') }}">Cancel</a>
+    </div>
+  </form>
+{% endblock %}
+

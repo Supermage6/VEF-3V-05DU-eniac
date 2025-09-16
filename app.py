@@ -2,6 +2,8 @@ from flask import Flask, render_template, request, redirect, url_for, session
 from werkzeug.security import generate_password_hash, check_password_hash
 import json
 import os
+from access import DEFAULT_ROLE, ROLE_STUDENT, ROLE_ADMIN  # default role and roles
+from access import is_student, current_role, require_roles
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "dev-secret-change-me")
@@ -22,7 +24,9 @@ def _save_users(users: dict):
     with open(USERS_FILE, 'w', encoding='utf-8') as f:
         json.dump(users, f, ensure_ascii=False, indent=2)
 
-klubbar_list = [
+CLUBS_FILE = 'klubbar.json'
+
+_DEFAULT_CLUBS = [
     {'nafn': 'Fighting Game Klúbbur', 'stofa': '203', 'formadur': 'Matt', 'desc': 'Klúbbur fyrir alla sem hafa áhuga á bardaga tölvuleikjum.'},
     {'nafn': 'Furry Klúbbur', 'stofa': '206', 'formadur': 'Aron', 'desc': 'Klúbbur fyrir alla sem hafa áhuga á furry menningu.'},
     {'nafn': 'Tónlistarklúbbur', 'stofa': 'Hátíðarsalur', 'formadur': 'Emily', 'desc': 'Klúbbur fyrir alla sem hafa áhuga á tónlist og spilamennsku.'},
@@ -32,13 +36,52 @@ klubbar_list = [
     {'nafn': 'D&D Klúbbur', 'stofa': 'fer eftir hóp', 'formadur': 'Frosti', 'desc': 'Klúbbur fyrir alla sem hafa áhuga á Dungeons & Dragons borðspilinu.'}
 ]
 
+def _load_clubs():
+    try:
+        with open(CLUBS_FILE, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+            if isinstance(data, list):
+                return data
+    except (FileNotFoundError, json.JSONDecodeError):
+        pass
+    return list(_DEFAULT_CLUBS)
+
+def _save_clubs(clubs: list):
+    with open(CLUBS_FILE, 'w', encoding='utf-8') as f:
+        json.dump(clubs, f, ensure_ascii=False, indent=2)
+
 @app.route('/')
 def home():
     return render_template('index.html')
 
 @app.route('/klubbar')
 def klubbar():
-    return render_template('klubbar.html', k = klubbar_list)
+    if current_role() not in {ROLE_STUDENT, ROLE_ADMIN}:
+        # Guests see a friendly prompt to log in
+        return render_template('klubbar_locked.html')
+    clubs = _load_clubs()
+    is_admin = (session.get('role') == ROLE_ADMIN)
+    return render_template('klubbar.html', k=clubs, is_admin=is_admin)
+
+@app.route('/klubbar/edit', methods=['GET', 'POST'])
+@require_roles(ROLE_ADMIN)
+def klubbar_edit():
+    clubs = _load_clubs()
+    if request.method == 'POST':
+        # Expect fields like name_0, desc_0
+        updated = []
+        for idx, c in enumerate(clubs):
+            name = (request.form.get(f'name_{idx}') or c.get('nafn') or '').strip()
+            desc = (request.form.get(f'desc_{idx}') or c.get('desc') or '').strip()
+            updated.append({
+                'nafn': name,
+                'stofa': c.get('stofa', ''),
+                'formadur': c.get('formadur', ''),
+                'desc': desc,
+            })
+        _save_clubs(updated)
+        return redirect(url_for('klubbar'))
+    return render_template('klubbar_edit.html', k=clubs)
 
 @app.route('/dagskra')
 def dagskra():
@@ -52,7 +95,15 @@ def login():
     users = _load_users()
     record = users.get(username)
     if record and check_password_hash(record.get('password_hash', ''), password):
+        # Role: knut is admin, others are student by default
+        new_role = ROLE_ADMIN if username.lower() == 'knut' else ROLE_STUDENT
+        if record.get('role') != new_role:
+            record['role'] = new_role
+            users[username] = record
+            _save_users(users)
         session['user'] = username
+        session['role'] = new_role
+        session['display_name'] = 'admin' if new_role == ROLE_ADMIN else username
     # On failure, silently fall through to home. Could add errors if desired.
     return redirect(url_for('home'))
 
@@ -74,10 +125,13 @@ def register():
                 error = 'Username already exists.'
             else:
                 users[username] = {
-                    'password_hash': generate_password_hash(password)
+                    'password_hash': generate_password_hash(password),
+                    'role': DEFAULT_ROLE,
                 }
                 _save_users(users)
                 session['user'] = username
+                session['role'] = DEFAULT_ROLE
+                session['display_name'] = username
                 return redirect(url_for('home'))
 
         # GET or error path
@@ -88,6 +142,8 @@ def register():
 @app.route('/logout', methods=['POST'])
 def logout():
     session.pop('user', None)
+    session.pop('role', None)
+    session.pop('display_name', None)
     return redirect(url_for('home'))
 
 @app.errorhandler(404)
