@@ -2,7 +2,7 @@
 {% block title %}KLÚBBAR{% endblock %}
 {% block content %}
 <body>
-    <div style="display: grid; grid-template-columns: 1fr 1fr;">
+    <div class="grid">
         <div>
             <h1>Klúbbar</h1>
             {% for i in k %}
@@ -17,10 +17,16 @@
         </div>
         <div>
             <h1>Stofur</h1>
-            <div style="border: 1px solid black; width: 600px; height: 400px; overflow: auto;">
-                placeholder
+            <div class="stofur">
+                <div style="display: flex; align-items: flex-end;">
+                    <div style="border: 2px solid black; width: 90px; height: 130px;">hátíðarsalur</div>
+                    <div style="border: 2px solid black; width: 70px; height: 70px;"></div>
+                    <div style="border: 2px solid black; width: 60px; height: 70px;"></div>
+                    <div style="border: 2px solid black; width: 50px; height: 70px;"></div>
+                </div>
+                <div style="border: 2px solid black; width: 15rem; height: 3rem;"></div>
             </div>
-            <button>hæð 2</button> <button>hæð 3</button>
+            <button class="floor">hæð 2</button> <button class="floor">hæð 3</button>
         </div>
     </div>
 </body>
