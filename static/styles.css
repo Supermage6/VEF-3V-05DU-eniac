@@ -4,6 +4,8 @@ body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, Ari
 header { padding: var(--gap); border-bottom: 1px solid #ddd; display: flex; align-items: center; }
 .brand { font-size: 1.8rem; font-weight: 700; letter-spacing: .04em; }
 .header-actions { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+/* Role label next to login/profile */
+.role-badge { font-weight: 700; font-size: .9rem; padding: 4px 10px; border: 1px solid #ddd; border-radius: 999px; background: #f7f7f7; color: #333; }
 nav { display: flex; gap: 12px; }
 nav a { text-decoration: none; color: inherit; padding: 4px 8px; border-radius: 6px; }
 .btn { appearance: none; border: 1px solid #333; background: #111; color: #fff; padding: 6px 12px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: .95rem; }
@@ -28,6 +30,11 @@ footer { padding: var(--gap); text-align: center; font-size: .9rem; color: #555;
 .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px; }
 .btn.secondary { background: #fff; color: #111; border-color: #999; }
 .btn.secondary:hover { background: #f4f4f4; }
+.create-user-inline { display:flex; gap:8px; align-items:center; margin-left: 8px; }
+.remove-user-inline { display:flex; gap:8px; align-items:center; margin-left: 8px; }
+.admin-user-tools { display:flex; flex-direction: column; gap: 6px; }
+.btn.danger { background: #b00020; border-color: #b00020; color: #fff; }
+.btn.danger:hover { background: #8c001a; }
 
 /* Klubbar page */
 .accordion {
@@ -62,4 +69,20 @@ footer { padding: var(--gap); text-align: center; font-size: .9rem; color: #555;
     background-color: white;
     overflow: hidden;
 }
+
+/* Admin edit button bottom-left on Clubs */
+.admin-edit-btn {
+    position: fixed;
+    left: 16px;
+    bottom: 16px;
+    appearance: none;
+    border: 1px solid #333;
+    background: #111;
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-weight: 700;
+    text-decoration: none;
+}
+.admin-edit-btn:hover { background: #000; }
 

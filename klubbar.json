@@ -1,0 +1,44 @@
+[
+  {
+    "nafn": "Fighting Game Klúbbur",
+    "stofa": "203",
+    "formadur": "Matt",
+    "desc": "Klúbbur fyrir alla sem hafa áhuga á bardaga tölvuleikjum."
+  },
+  {
+    "nafn": "Furry Klúbbur",
+    "stofa": "206",
+    "formadur": "Aron",
+    "desc": "Klúbbur fyrir alla sem hafa áhuga á furry menningu."
+  },
+  {
+    "nafn": "Tónlistarklúbbur",
+    "stofa": "Hátíðarsalur",
+    "formadur": "Emily",
+    "desc": "Klúbbur fyrir alla sem hafa áhuga á tónlist og spilamennsku."
+  },
+  {
+    "nafn": "Nördaklúbbur",
+    "stofa": "202",
+    "formadur": "Ösp og Kormákur",
+    "desc": "Klúbbur fyrir alla nörda og áhugafólk um ýmislegt nördalegt."
+  },
+  {
+    "nafn": "Anime og Cosplay Klúbbur",
+    "stofa": "205",
+    "formadur": "Sky",
+    "desc": "Klúbbur fyrir alla sem hafa áhuga á anime og cosplay."
+  },
+  {
+    "nafn": "Warhammer Klúbbur",
+    "stofa": "302",
+    "formadur": "???",
+    "desc": "Klúbbur fyrir alla sem hafa áhuga á Warhammer borðspilinu."
+  },
+  {
+    "nafn": "D&D Klúbbur",
+    "stofa": "fer eftir hóp",
+    "formadur": "Frosti",
+    "desc": "Klúbbur fyrir alla sem hafa áhuga á Dungeons & Dragons borðspilinu."
+  }
+]

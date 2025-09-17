@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Clubs — Login Required{% endblock %}
+{% block content %}
+  <section aria-labelledby="locked">
+    <h2 id="locked">Clubs</h2>
+    <p>You need to be logged in to access Clubs.</p>
+    <div style="display:flex; gap:10px; align-items:center;">
+      <button class="btn" type="button" data-open-login="true">Log in</button>
+      <a class="btn secondary" href="{{ url_for('register') }}">Create account</a>
+    </div>
+  </section>
+{% endblock %}
+

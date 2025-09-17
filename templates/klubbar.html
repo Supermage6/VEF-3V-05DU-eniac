@@ -1,31 +1,34 @@
 {% extends "base.html" %}
 {% block title %}KLÚBBAR{% endblock %}
 {% block content %}
-<body>
-    <div style="display: grid; grid-template-columns: 1fr 1fr;">
-        <div>
-            <h1>Klúbbar</h1>
-            {% for i in k %}
-            <button class="accordion">{{ i.nafn }}</button>
-            <div class="panel">
-                <p>Stofa: {{ i.stofa }}</p>
-                <p>Formaður: {{ i.formadur }}</p>
-                <p>{{ i.desc }}</p>
-            </div>
-            {% endfor %}
-            <button class="stofna">Stofna klúbb +</button>
+  <div style="display: grid; grid-template-columns: 1fr 1fr;">
+    <div>
+      <h1>Klúbbar</h1>
+      {% for i in k %}
+        <button class="accordion">{{ i.nafn }}</button>
+        <div class="panel">
+          <p>Stofa: {{ i.stofa }}</p>
+          <p>Formaður: {{ i.formadur }}</p>
+          <p>{{ i.desc }}</p>
         </div>
-        <div>
-            <h1>Stofur</h1>
-            <div style="border: 1px solid black; width: 600px; height: 400px; overflow: auto;">
-                placeholder
-            </div>
-            <button>hæð 2</button> <button>hæð 3</button>
-        </div>
+      {% endfor %}
+      <button class="stofna">Stofna klúbb +</button>
     </div>
-</body>
+    <div>
+      <h1>Stofur</h1>
+      <div style="border: 1px solid black; width: 600px; height: 400px; overflow: auto;">
+        placeholder
+      </div>
+      <button>hæð 2</button> <button>hæð 3</button>
+    </div>
+  </div>
+
+  {% if is_admin %}
+    <a class="admin-edit-btn" href="{{ url_for('klubbar_edit') }}" title="Edit clubs">Edit</a>
+  {% endif %}
 <script>
-    for (i = 0; i < acc.length; i++) {
+    const acc = document.getElementsByClassName("accordion");
+    for (let i = 0; i < acc.length; i++) {
         acc[i].addEventListener("click", function() {
             this.classList.toggle("active");
             var panel = this.nextElementSibling;
@@ -38,4 +41,3 @@
     }
 </script>
 {% endblock %}
-</html>
