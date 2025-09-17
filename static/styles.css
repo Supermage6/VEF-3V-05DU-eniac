@@ -22,7 +22,7 @@ footer { padding: var(--gap); text-align: center; font-size: .9rem; color: #555;
     width: min(420px, 92vw); background: #fff; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,.25); padding: 20px; }
 .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
 .modal-title { margin: 0; font-size: 1.25rem; }
-.modal-close { border: none; background: transparent; font-size: 1.4rem; line-height: 1; cursor: pointer; padding: 4px 8px; }
+.pointer { cursor: pointer; }
 .field { display: grid; gap: 6px; margin: 10px 0; }
 .field input { padding: 10px 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 1rem; }
 .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px; }
@@ -61,5 +61,11 @@ footer { padding: var(--gap); text-align: center; font-size: .9rem; color: #555;
     display: none;
     background-color: white;
     overflow: hidden;
+}
+
+.spacing {
+    margin: 2em;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
 }
 
