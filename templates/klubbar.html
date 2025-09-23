@@ -16,8 +16,8 @@
     </div>
     <div>
       <h1>Stofur</h1>
-      <div style="border: 1px solid black; width: 600px; height: 400px; overflow: auto;">
-        placeholder
+      <div style="border: 1px solid black; width: 600px; height: 400px; overflow: auto; display:flex; align-items:center; justify-content:center; background:#fff;">
+        <img src="{{ url_for('static', filename='floor-2.png') }}" alt="Floor plan" style="max-width:100%; height:auto; display:block;"/>
       </div>
       <button>hæð 2</button> <button>hæð 3</button>
     </div>
@@ -29,13 +29,18 @@
 <script>
     const acc = document.getElementsByClassName("accordion");
     for (let i = 0; i < acc.length; i++) {
-        acc[i].addEventListener("click", function() {
+        acc[i].addEventListener("click", function () {
             this.classList.toggle("active");
-            var panel = this.nextElementSibling;
-            if (panel.style.display === "block") {
-                panel.style.display = "none";
+            const panel = this.nextElementSibling;
+            const willOpen = !panel.classList.contains("open");
+
+            panel.classList.toggle("open");
+            if (willOpen) {
+                // Expand to its natural height for smooth animation
+                panel.style.maxHeight = panel.scrollHeight + "px";
             } else {
-                panel.style.display = "block";
+                // Collapse smoothly
+                panel.style.maxHeight = null;
             }
         });
     }
