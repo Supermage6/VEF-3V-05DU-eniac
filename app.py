@@ -56,9 +56,6 @@ def home():
 
 @app.route('/klubbar')
 def klubbar():
-    if current_role() not in {ROLE_STUDENT, ROLE_ADMIN}:
-        # Guests see a friendly prompt to log in
-        return render_template('klubbar_locked.html')
     clubs = _load_clubs()
     is_admin = (session.get('role') == ROLE_ADMIN)
     return render_template('klubbar.html', k=clubs, is_admin=is_admin)
