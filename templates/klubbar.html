@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block title %}KLÚBBAR{% endblock %}
 {% block content %}
+
 <body>
     <div class="grid">
         <div>
@@ -20,15 +21,29 @@
             <div class="stofur">
             </div>
             <button class="floor">hæð 2</button> <button class="floor">hæð 3</button>
-        </div>
-    </div>
-</body>
-<script>
-    var acc = document.getElementsByClassName("accordion");
-    var i;
 
-    
-    for (i = 0; i < acc.length; i++) {
+
+        </div>
+      {% endfor %}
+      <button class="stofna">Stofna klúbb +</button>
+    </div>
+    <div>
+      <h1>Stofur</h1>
+      <div style="border: 1px solid black; width: 600px; height: 400px; overflow: auto;">
+        placeholder
+      </div>
+      <button>hæð 2</button> <button>hæð 3</button>
+    </div>
+  </div>
+
+  {% if is_admin %}
+    <a class="admin-edit-btn" href="{{ url_for('klubbar_edit') }}" title="Edit clubs">Edit</a>
+  {% endif %}
+<script>
+
+    const acc = document.getElementsByClassName("accordion");
+    for (let i = 0; i < acc.length; i++) {
+
         acc[i].addEventListener("click", function() {
             this.classList.toggle("active");
             var panel = this.nextElementSibling;
@@ -40,5 +55,4 @@
         });
     }
 </script>
-</html>
 {% endblock %}

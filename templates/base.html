@@ -15,19 +15,22 @@
         <a href="{{ url_for('klubbar') }}">Clubs</a>
         <a href="{{ url_for('dagskra') }}">Schedule</a>
       </nav>
+      {% block header_auth %}
+        <span class="role-badge" aria-live="polite">{{ 'Admin' if session.get('role') == 'admin' else ('Student' if session.get('user') else 'Guest') }}</span>
 
-      {% if session.get('user') %}
-        <div class="profile-wrap">
-          <button id="profileBtn" class="profile-pill" aria-haspopup="menu" aria-expanded="false" title="{{ session['user'] }}">{{ session['user'][:3]|upper }}</button>
-          <div id="profileMenu" class="profile-menu" role="menu" aria-label="Profile menu">
-            <form method="post" action="{{ url_for('logout') }}">
-              <button class="profile-item" type="submit" role="menuitem">Log out</button>
-            </form>
+        {% if session.get('user') %}
+          <div class="profile-wrap">
+            <button id="profileBtn" class="profile-pill" aria-haspopup="menu" aria-expanded="false" title="{{ session.get('display_name', session['user']) }}">{{ session.get('display_name', session['user'])[:3]|upper }}</button>
+            <div id="profileMenu" class="profile-menu" role="menu" aria-label="Profile menu">
+              <form method="post" action="{{ url_for('logout') }}">
+                <button class="profile-item" type="submit" role="menuitem">Log out</button>
+              </form>
+            </div>
           </div>
-        </div>
-      {% else %}
-        <a id="loginBtn" class="btn" href="#login" aria-label="Log in">Log in</a>
-      {% endif %}
+        {% else %}
+          <a id="loginBtn" class="btn" href="#login" aria-label="Log in">Log in</a>
+        {% endif %}
+      {% endblock %}
     </div>
   </header>
 
@@ -50,6 +53,7 @@
           <input name="password" type="password" autocomplete="current-password" required>
         </label>
         <div class="modal-actions">
+          <a class="btn secondary" href="{{ url_for('register') }}">Create user</a>
           <button class="btn secondary" type="button" data-close="true">Cancel</button>
           <button class="btn" type="submit">Log in</button>
         </div>
@@ -83,6 +87,9 @@
         if (lastFocused && typeof lastFocused.focus === 'function') lastFocused.focus();
       }
       if (openBtn) openBtn.addEventListener('click', openModal);
+      // Also support any element with data-open-login="true"
+      document.querySelectorAll('[data-open-login]')
+        .forEach(el => el.addEventListener('click', openModal));
       modal.addEventListener('click', (e)=>{
         if (e.target.dataset.close === 'true') closeModal();
       });
