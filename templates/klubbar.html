@@ -1,15 +1,28 @@
 {% extends "base.html" %}
 {% block title %}KLÚBBAR{% endblock %}
 {% block content %}
-  <div style="display: grid; grid-template-columns: 1fr 1fr;">
-    <div>
-      <h1>Klúbbar</h1>
-      {% for i in k %}
-        <button class="accordion">{{ i.nafn }}</button>
-        <div class="panel">
-          <p>Stofa: {{ i.stofa }}</p>
-          <p>Formaður: {{ i.formadur }}</p>
-          <p>{{ i.desc }}</p>
+
+<body>
+    <div class="grid">
+        <div>
+            <h1>Klúbbar</h1>
+            {% for i in k %}
+            <button class="accordion">{{ i.nafn }}</button>
+            <div class="panel">
+                <p>Stofa: {{ i.stofa }}</p>
+                <p>Formaður: {{ i.formadur }}</p>
+                <p>{{ i.desc }}</p>
+            </div>
+            {% endfor %}
+            <button class="stofna">Stofna klúbb +</button>
+        </div>
+        <div>
+            <h1>Stofur</h1>
+            <div class="stofur">
+            </div>
+            <button class="floor">hæð 2</button> <button class="floor">hæð 3</button>
+
+
         </div>
       {% endfor %}
       <button class="stofna">Stofna klúbb +</button>
@@ -27,8 +40,10 @@
     <a class="admin-edit-btn" href="{{ url_for('klubbar_edit') }}" title="Edit clubs">Edit</a>
   {% endif %}
 <script>
+
     const acc = document.getElementsByClassName("accordion");
     for (let i = 0; i < acc.length; i++) {
+
         acc[i].addEventListener("click", function() {
             this.classList.toggle("active");
             var panel = this.nextElementSibling;
