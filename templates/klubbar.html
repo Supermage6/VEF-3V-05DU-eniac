@@ -1,25 +1,25 @@
-{% extends "base.html" %}
-{% block title %}KLÚBBAR{% endblock %}
+﻿{% extends "base.html" %}
+{% block title %}KLÃšBBAR{% endblock %}
 {% block content %}
   <div style="display: grid; grid-template-columns: 1fr 1fr;">
     <div>
-      <h1>Klúbbar</h1>
+      <h1>KlÃºbbar</h1>
       {% for i in k %}
         <button class="accordion">{{ i.nafn }}</button>
         <div class="panel">
           <p>Stofa: {{ i.stofa }}</p>
-          <p>Formaður: {{ i.formadur }}</p>
+          <p>FormaÃ°ur: {{ i.formadur }}</p>
           <p>{{ i.desc }}</p>
         </div>
       {% endfor %}
-      <button class="stofna">Stofna klúbb +</button>
+      <button class="stofna">Stofna klÃºbb +</button>
     </div>
     <div>
       <h1>Stofur</h1>
-      <div style="border: 1px solid black; width: 600px; height: 400px; overflow: auto; display:flex; align-items:center; justify-content:center; background:#fff;">
+      <div id="map-box" style="position: relative; border: 1px solid black; width: 600px; background:#fff;">
         <img id="floor-map" src="{{ url_for('static', filename='floor-2.png') }}" alt="Floor plan" style="max-width:100%; height:auto; display:block;"/>
       </div>
-      <button>hæð 2</button> <button>hæð 3</button>
+      <button>hÃ¦Ã° 2</button> <button>hÃ¦Ã° 3</button>
     </div>
   </div>
 
@@ -44,27 +44,108 @@
             }
         });
     }
-    // Floor map toggle without changing markup of buttons
+    // Floor map + hotspots overlay
+    const CLUBS = {{ k | tojson }};
+    const IS_ADMIN = {{ 'true' if is_admin else 'false' }};
     (function() {
       const mapEl = document.getElementById('floor-map');
-      if (!mapEl) return;
-      const mapBox = mapEl.parentElement;
-      if (!mapBox) return;
-      const btn1 = mapBox.nextElementSibling;
-      const btn2 = btn1 ? btn1.nextElementSibling : null;
+      const mapBox = document.getElementById('map-box');
+      if (!mapEl || !mapBox) return;
+      // Buttons immediately after map box
+      const btn1 = mapBox.nextElementSibling; // floor 2
+      const btn2 = btn1 ? btn1.nextElementSibling : null; // floor 3
       const floorSrc = {
         '2': "{{ url_for('static', filename='floor-2.png') }}",
         '3': "{{ url_for('static', filename='floor-3.png') }}",
       };
+      // Nudge icons lower (percent of map height)
+        const Y_OFFSET = { '2': 3, '3': 3 };
+        let hotspotsData = null;
+        let currentFloor = '2';
+        let editMode = false;
+
+        function saveMap() {
+          if (!IS_ADMIN || !hotspotsData) return;
+          fetch("{{ url_for('admin_map_save') }}", {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(hotspotsData)
+          }).catch(() => {});
+        }
+      function clearHotspots() {
+        mapBox.querySelectorAll('.hotspot').forEach(n => n.remove());
+      }
+      function renderHotspots(floor) {
+        clearHotspots();
+        if (!hotspotsData || !hotspotsData.floors) return;
+        const items = hotspotsData.floors[floor] || [];
+        items.forEach(item => {
+          const el = document.createElement('div');
+            const roomCode = (item.room || '').toString();
+            const club = CLUBS.find(c => (c.stofa || '').toString().trim().toLowerCase() === roomCode.trim().toLowerCase());
+            el.className = 'hotspot' + (club ? ' assigned' : ' unassigned');
+            const y = (item.y || 0) + (Y_OFFSET[floor] || 0);
+            el.style.left = (item.x || 0) + '%';
+            el.style.top = y + '%';
+            // size via CSS; center with transform
+          el.setAttribute('data-label', (item.room ? ('Stofa ' + item.room + ' â€” ') : '') + (item.club || 'Ã“ÃºthlutaÃ°'));
+          el.title = item.club || '';
+            // override label/title based on current club assignment
+            el.setAttribute('data-label', (item.room ? ('Stofa ' + item.room + ' - ') : '') + (club ? (club.nafn || '') : 'Ã“ÃºthlutaÃ°'));
+              el.title = club ? (club.nafn || '') : '';
+              mapBox.appendChild(el);
+
+              // Drag to position in admin edit mode (keyboard: press "E" to toggle, "S" to save)
+              el.addEventListener('pointerdown', (ev) => {
+                if (!IS_ADMIN || !editMode) return;
+                el.setPointerCapture(ev.pointerId);
+                const roomIdx = (hotspotsData.floors[currentFloor] || []).findIndex(r => (r.room || '').toString() === roomCode);
+                const onMove = (e) => {
+                  const rect = mapBox.getBoundingClientRect();
+                  let nx = ((e.clientX - rect.left) / rect.width) * 100;
+                  let ny = ((e.clientY - rect.top) / rect.height) * 100;
+                  nx = Math.max(0, Math.min(100, nx));
+                  ny = Math.max(0, Math.min(100, ny));
+                  el.style.left = nx + '%';
+                  el.style.top = ny + '%';
+                  if (roomIdx >= 0) {
+                    hotspotsData.floors[currentFloor][roomIdx].x = parseFloat(nx.toFixed(2));
+                    hotspotsData.floors[currentFloor][roomIdx].y = parseFloat((ny - (Y_OFFSET[currentFloor] || 0)).toFixed(2));
+                  }
+                };
+                const onUp = () => {
+                  el.releasePointerCapture(ev.pointerId);
+                  window.removeEventListener('pointermove', onMove);
+                  window.removeEventListener('pointerup', onUp);
+                };
+                window.addEventListener('pointermove', onMove);
+                window.addEventListener('pointerup', onUp);
+              });
+        });
+      }
       function setFloor(n) {
-        mapEl.src = floorSrc[n] || floorSrc['2'];
+        currentFloor = (n in floorSrc) ? n : '2';
+        mapEl.src = floorSrc[currentFloor];
+        renderHotspots(currentFloor);
       }
-      if (btn1 && btn1.tagName === 'BUTTON') {
-        btn1.addEventListener('click', () => setFloor('2'));
-      }
-      if (btn2 && btn2.tagName === 'BUTTON') {
-        btn2.addEventListener('click', () => setFloor('3'));
-      }
+      if (btn1 && btn1.tagName === 'BUTTON') btn1.addEventListener('click', () => setFloor('2'));
+      if (btn2 && btn2.tagName === 'BUTTON') btn2.addEventListener('click', () => setFloor('3'));
+
+      // Keyboard shortcuts for admins: E = toggle edit, S = save
+      document.addEventListener('keydown', (e) => {
+        if (!IS_ADMIN) return;
+        if (e.key === 'e' || e.key === 'E') {
+          editMode = !editMode;
+        } else if (e.key === 's' || e.key === 'S') {
+          saveMap();
+        }
+      });
+      // Load hotspots JSON then render
+      fetch("{{ url_for('static', filename='map_rooms.json') }}")
+        .then(r => r.json())
+        .then(data => { hotspotsData = data; renderHotspots(currentFloor); })
+        .catch(() => {});
     })();
 </script>
 {% endblock %}
+
