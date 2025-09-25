@@ -50,6 +50,12 @@ footer { padding: var(--gap); text-align: center; font-size: .9rem; color: #555;
 /* Homepage layout helpers (removed) */
 
 /* Klubbar page */
+
+.grid {
+    margin: 2rem; 
+    display: grid; 
+    grid-template-columns: 1fr 1fr;
+}
 .accordion {
     color: #444;
     cursor: pointer;
