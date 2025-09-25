@@ -60,6 +60,22 @@ def klubbar():
     is_admin = (session.get('role') == ROLE_ADMIN)
     return render_template('klubbar.html', k=clubs, is_admin=is_admin)
 
+@app.route('/admin/map/save', methods=['POST'])
+@require_roles(ROLE_ADMIN)
+def admin_map_save():
+    data = request.get_json(silent=True)
+    if not isinstance(data, dict) or 'floors' not in data:
+        return ('Invalid payload', 400)
+    # Save to static/map_rooms.json so frontend can fetch it
+    static_dir = app.static_folder or 'static'
+    path = os.path.join(static_dir, 'map_rooms.json')
+    try:
+        with open(path, 'w', encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+    except OSError:
+        return ('Failed to write map file', 500)
+    return ('OK', 200)
+
 @app.route('/klubbar/edit', methods=['GET', 'POST'])
 @require_roles(ROLE_ADMIN)
 def klubbar_edit():
@@ -69,10 +85,11 @@ def klubbar_edit():
         updated = []
         for idx, c in enumerate(clubs):
             name = (request.form.get(f'name_{idx}') or c.get('nafn') or '').strip()
+            stofa = (request.form.get(f'stofa_{idx}') or c.get('stofa') or '').strip()
             desc = (request.form.get(f'desc_{idx}') or c.get('desc') or '').strip()
             updated.append({
                 'nafn': name,
-                'stofa': c.get('stofa', ''),
+                'stofa': stofa,
                 'formadur': c.get('formadur', ''),
                 'desc': desc,
             })

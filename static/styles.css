@@ -106,3 +106,38 @@ footer { padding: var(--gap); text-align: center; font-size: .9rem; color: #555;
 }
 .admin-edit-btn:hover { background: #000; }
 
+/* Map hotspots */
+#map-box { position: relative; }
+#floor-map { position: relative; z-index: 0; pointer-events: none; }
+.hotspot {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    transform: translate(-50%, -50%); /* center on (x,y) */
+    border: 2px solid rgba(0,0,0,.45);
+    border-radius: 50%;
+    background: #f0f0f0;
+    box-shadow: 0 1px 3px rgba(0,0,0,.25);
+    cursor: pointer;
+    touch-action: none;
+    z-index: 1;
+}
+.hotspot.assigned { background: #ffd54d; }
+.hotspot.unassigned { background: #e0e0e0; }
+.hotspot::after {
+    content: attr(data-label);
+    position: absolute;
+    left: 50%;
+    bottom: 100%;
+    transform: translate(-50%, -6px);
+    background: #111;
+    color: #fff;
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .15s ease, transform .15s ease;
+}
+.hotspot:hover::after { opacity: 1; transform: translate(-50%, -10px); }

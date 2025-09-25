@@ -1,25 +1,25 @@
 ﻿{% extends "base.html" %}
-{% block title %}KLÃšBBAR{% endblock %}
+{% block title %}KLÚBBAR{% endblock %}
 {% block content %}
   <div style="display: grid; grid-template-columns: 1fr 1fr;">
     <div>
-      <h1>KlÃºbbar</h1>
+      <h1>Klúbbar</h1>
       {% for i in k %}
         <button class="accordion">{{ i.nafn }}</button>
         <div class="panel">
           <p>Stofa: {{ i.stofa }}</p>
-          <p>FormaÃ°ur: {{ i.formadur }}</p>
+          <p>Formaður: {{ i.formadur }}</p>
           <p>{{ i.desc }}</p>
         </div>
       {% endfor %}
-      <button class="stofna">Stofna klÃºbb +</button>
+      <button class="stofna">Stofna klúbb +</button>
     </div>
     <div>
       <h1>Stofur</h1>
       <div id="map-box" style="position: relative; border: 1px solid black; width: 600px; background:#fff;">
         <img id="floor-map" src="{{ url_for('static', filename='floor-2.png') }}" alt="Floor plan" style="max-width:100%; height:auto; display:block;"/>
       </div>
-      <button>hÃ¦Ã° 2</button> <button>hÃ¦Ã° 3</button>
+      <button>hæð 2</button> <button>hæð 3</button>
     </div>
   </div>
 
@@ -88,10 +88,10 @@
             el.style.left = (item.x || 0) + '%';
             el.style.top = y + '%';
             // size via CSS; center with transform
-          el.setAttribute('data-label', (item.room ? ('Stofa ' + item.room + ' â€” ') : '') + (item.club || 'Ã“ÃºthlutaÃ°'));
-          el.title = item.club || '';
+            el.setAttribute('data-label', (item.room ? ('Stofa ' + item.room + ' — ') : '') + (item.club || 'Óúthlutað'));
+            el.title = item.club || '';
             // override label/title based on current club assignment
-            el.setAttribute('data-label', (item.room ? ('Stofa ' + item.room + ' - ') : '') + (club ? (club.nafn || '') : 'Ã“ÃºthlutaÃ°'));
+              el.setAttribute('data-label', (item.room ? ('Stofa ' + item.room + ' - ') : '') + (club ? (club.nafn || '') : 'Óúthlutað'));
               el.title = club ? (club.nafn || '') : '';
               mapBox.appendChild(el);
 
