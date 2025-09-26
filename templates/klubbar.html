@@ -12,7 +12,9 @@
           <p>{{ i.desc }}</p>
         </div>
       {% endfor %}
-      <button class="stofna">Stofna klúbb +</button>
+      {% if is_student or is_admin %}
+        <a class="btn" href="{{ url_for('klubbar_propose') }}">Stofna klúbb +</a>
+      {% endif %}
     </div>
     <div>
       <h1>Stofur</h1>
@@ -129,4 +131,3 @@
   })();
 </script>
 {% endblock %}
-
