@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+﻿{% extends "base.html" %}
 {% block title %}Edit Clubs{% endblock %}
 {% block header_auth %}
   <div class="admin-user-tools">
@@ -19,31 +19,37 @@
 {% endblock %}
 {% block content %}
   <h1>Edit Clubs</h1>
-  <form method="post" action="{{ url_for('klubbar_edit') }}" style="display:grid; gap:16px; max-width:720px;">
+  <form method="post" action="{{ url_for('klubbar_edit') }}" class="edit-club-form">
     {% for i in range(k|length) %}
       {% set c = k[i] %}
       <fieldset style="border:1px solid #ddd; border-radius:8px; padding:12px;">
         <legend>Club #{{ i + 1 }}</legend>
-        <div class="field">
-          <label>
-            <div>Name</div>
-            <input type="text" name="name_{{ i }}" value="{{ c.nafn }}" required />
-          </label>
-        </div>
-        <div class="field">
-          <label>
-            <div>Room (stofa)</div>
-            <input type="text" name="stofa_{{ i }}" value="{{ c.stofa }}" />
-          </label>
-        </div>
-        <div class="field">
-          <label>
-            <div>Description</div>
-            <textarea name="desc_{{ i }}" rows="3" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px;">{{ c.desc }}</textarea>
-          </label>
-        </div>
-        <div style="color:#666; font-size:.9rem;">
-          Room: {{ c.stofa }} • Leader: {{ c.formadur }}
+        <div class="edit-club-grid">
+          <div class="field name-field">
+            <label>
+              <div>Name</div>
+              <input type="text" name="name_{{ i }}" value="{{ c.nafn }}" required />
+            </label>
+          </div>
+          <div class="field room-field">
+            <label>
+              <div>Room (stofa)</div>
+              <input type="text" name="stofa_{{ i }}" value="{{ c.stofa }}" />
+            </label>
+          </div>
+          <div class="field full">
+            <label>
+              <div>Description</div>
+              <textarea name="desc_{{ i }}" rows="3" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px;">{{ c.desc }}</textarea>
+            </label>
+          </div>
+          <div class="row-actions full">
+            <div style="color:#666; font-size:.9rem;">Room: {{ c.stofa }} • Leader: {{ c.formadur }}</div>
+            <form method="post" action="{{ url_for('klubbar_remove') }}" onsubmit="return confirm('Are you sure you want to remove this club?');">
+              <input type="hidden" name="idx" value="{{ i }}" />
+              <button class="btn danger" type="submit">Remove</button>
+            </form>
+          </div>
         </div>
       </fieldset>
     {% endfor %}
@@ -60,8 +66,8 @@
       <img id="floor-map" src="{{ url_for('static', filename='floor-2.png') }}" alt="Floor plan" style="max-width:100%; height:auto; display:block;"/>
     </div>
     <div style="display:flex; gap:8px; align-items:center; margin-top:8px;">
-      <button type="button" class="btn secondary" data-floor="2" aria-pressed="true">hæð 2</button>
-      <button type="button" class="btn secondary" data-floor="3" aria-pressed="false">hæð 3</button>
+      <button type="button" class="btn secondary" data-floor="2" aria-pressed="true">Hæð 2</button>
+      <button type="button" class="btn secondary" data-floor="3" aria-pressed="false">Hæð 3</button>
       <button type="button" class="btn" id="save-map">Save map</button>
       <span id="save-status" style="margin-left:8px; color:#666; font-size:.9rem;"></span>
     </div>
@@ -116,7 +122,7 @@
           const y = (item.y || 0) + (Y_OFFSET[floor] || 0);
           el.style.left = (item.x || 0) + '%';
           el.style.top = y + '%';
-          el.setAttribute('data-label', (item.room ? ('Stofa ' + item.room + ' - ') : '') + (club ? (club.nafn || '') : 'Óúthlutað'));
+          el.setAttribute('data-label', (item.room ? ('Stofa ' + item.room + ' - ') : '') + (club ? (club.nafn || '') : 'Óhlúthlutað'));
           el.title = club ? (club.nafn || '') : '';
           mapBox.appendChild(el);
 
@@ -162,7 +168,7 @@
       saveBtn.addEventListener('click', () => {
         if (!data) return;
         saveBtn.disabled = true;
-        saveStatus.textContent = 'Saving…';
+        saveStatus.textContent = 'Saving';
         fetch("{{ url_for('admin_map_save') }}", {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
