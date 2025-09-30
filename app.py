@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, session
 from werkzeug.security import generate_password_hash, check_password_hash
 import json
 import os
+import time
 from access import DEFAULT_ROLE, ROLE_STUDENT, ROLE_ADMIN  # default role and roles
 from access import is_student, current_role, require_roles
 
@@ -25,6 +26,7 @@ def _save_users(users: dict):
         json.dump(users, f, ensure_ascii=False, indent=2)
 
 CLUBS_FILE = 'klubbar.json'
+PROPOSALS_FILE = 'proposals.json'
 
 _DEFAULT_CLUBS = [
     {'nafn': 'Fighting Game Klúbbur', 'stofa': '203', 'formadur': 'Matt', 'desc': 'Klúbbur fyrir alla sem hafa áhuga á bardaga tölvuleikjum.'},
@@ -50,18 +52,108 @@ def _save_clubs(clubs: list):
     with open(CLUBS_FILE, 'w', encoding='utf-8') as f:
         json.dump(clubs, f, ensure_ascii=False, indent=2)
 
+def _load_proposals():
+    try:
+        with open(PROPOSALS_FILE, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+            if isinstance(data, list):
+                return data
+    except (FileNotFoundError, json.JSONDecodeError):
+        pass
+    return []
+
+def _save_proposals(items: list):
+    with open(PROPOSALS_FILE, 'w', encoding='utf-8') as f:
+        json.dump(items, f, ensure_ascii=False, indent=2)
+
 @app.route('/')
 def home():
     return render_template('index.html')
 
 @app.route('/klubbar')
 def klubbar():
-    if current_role() not in {ROLE_STUDENT, ROLE_ADMIN}:
-        # Guests see a friendly prompt to log in
-        return render_template('klubbar_locked.html')
     clubs = _load_clubs()
     is_admin = (session.get('role') == ROLE_ADMIN)
-    return render_template('klubbar.html', k=clubs, is_admin=is_admin)
+    # Expose student flag so template can gate the create button
+    is_student_flag = (session.get('role') == ROLE_STUDENT)
+    return render_template('klubbar.html', k=clubs, is_admin=is_admin, is_student=is_student_flag)
+
+@app.route('/info')
+@require_roles(ROLE_ADMIN)
+def info():
+    proposals = _load_proposals()
+    return render_template('info.html', proposals=proposals)
+
+@app.route('/klubbar/propose', methods=['GET', 'POST'])
+@require_roles(ROLE_STUDENT, ROLE_ADMIN)
+def klubbar_propose():
+    if request.method == 'POST':
+        name = (request.form.get('nafn') or '').strip()
+        stofa = (request.form.get('stofa') or '').strip()
+        formadur = (request.form.get('formadur') or '').strip()
+        desc = (request.form.get('desc') or '').strip()
+        if name:
+            proposals = _load_proposals()
+            pid = str(int(time.time() * 1000))
+            proposals.append({
+                'id': pid,
+                'nafn': name,
+                'stofa': stofa,
+                'formadur': formadur,
+                'desc': desc,
+                'submitted_by': session.get('user') or 'unknown',
+                'status': 'pending',
+            })
+            _save_proposals(proposals)
+        return redirect(url_for('home'))
+    return render_template('klubbar_propose.html')
+
+@app.route('/admin/proposals/<pid>/approve', methods=['POST'])
+@require_roles(ROLE_ADMIN)
+def admin_proposal_approve(pid):
+    proposals = _load_proposals()
+    remaining = []
+    approved = None
+    for p in proposals:
+        if str(p.get('id')) == str(pid):
+            approved = p
+        else:
+            remaining.append(p)
+    if approved:
+        clubs = _load_clubs()
+        clubs.append({
+            'nafn': approved.get('nafn', ''),
+            'stofa': approved.get('stofa', ''),
+            'formadur': approved.get('formadur', ''),
+            'desc': approved.get('desc', ''),
+        })
+        _save_clubs(clubs)
+        _save_proposals(remaining)
+    return redirect(url_for('info'))
+
+@app.route('/admin/proposals/<pid>/deny', methods=['POST'])
+@require_roles(ROLE_ADMIN)
+def admin_proposal_deny(pid):
+    proposals = _load_proposals()
+    remaining = [p for p in proposals if str(p.get('id')) != str(pid)]
+    _save_proposals(remaining)
+    return redirect(url_for('info'))
+
+@app.route('/admin/map/save', methods=['POST'])
+@require_roles(ROLE_ADMIN)
+def admin_map_save():
+    data = request.get_json(silent=True)
+    if not isinstance(data, dict) or 'floors' not in data:
+        return ('Invalid payload', 400)
+    # Save to static/map_rooms.json so frontend can fetch it
+    static_dir = app.static_folder or 'static'
+    path = os.path.join(static_dir, 'map_rooms.json')
+    try:
+        with open(path, 'w', encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+    except OSError:
+        return ('Failed to write map file', 500)
+    return ('OK', 200)
 
 @app.route('/klubbar/edit', methods=['GET', 'POST'])
 @require_roles(ROLE_ADMIN)
@@ -72,16 +164,32 @@ def klubbar_edit():
         updated = []
         for idx, c in enumerate(clubs):
             name = (request.form.get(f'name_{idx}') or c.get('nafn') or '').strip()
+            stofa = (request.form.get(f'stofa_{idx}') or c.get('stofa') or '').strip()
             desc = (request.form.get(f'desc_{idx}') or c.get('desc') or '').strip()
             updated.append({
                 'nafn': name,
-                'stofa': c.get('stofa', ''),
+                'stofa': stofa,
                 'formadur': c.get('formadur', ''),
                 'desc': desc,
             })
         _save_clubs(updated)
         return redirect(url_for('klubbar'))
     return render_template('klubbar_edit.html', k=clubs)
+
+
+@app.route('/klubbar/remove', methods=['POST'])
+@require_roles(ROLE_ADMIN)
+def klubbar_remove():
+    idx_raw = request.form.get('idx')
+    try:
+        idx = int(idx_raw)
+    except (TypeError, ValueError):
+        return redirect(url_for('klubbar_edit'))
+    clubs = _load_clubs()
+    if 0 <= idx < len(clubs):
+        clubs.pop(idx)
+        _save_clubs(clubs)
+    return redirect(url_for('klubbar_edit'))
 
 
 @app.route('/admin/create_user', methods=['POST'])
