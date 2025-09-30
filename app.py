@@ -27,6 +27,7 @@ def _save_users(users: dict):
 
 CLUBS_FILE = 'klubbar.json'
 PROPOSALS_FILE = 'proposals.json'
+SCHEDULE_SETTINGS_FILE = 'schedule_settings.json'
 
 _DEFAULT_CLUBS = [
     {'nafn': 'Fighting Game Klúbbur', 'stofa': '203', 'formadur': 'Matt', 'desc': 'Klúbbur fyrir alla sem hafa áhuga á bardaga tölvuleikjum.'},
@@ -65,6 +66,22 @@ def _load_proposals():
 def _save_proposals(items: list):
     with open(PROPOSALS_FILE, 'w', encoding='utf-8') as f:
         json.dump(items, f, ensure_ascii=False, indent=2)
+
+# --- Schedule settings (per-date colors) ---
+def _load_schedule_settings() -> dict:
+    try:
+        with open(SCHEDULE_SETTINGS_FILE, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+            if isinstance(data, dict):
+                return data
+    except (FileNotFoundError, json.JSONDecodeError):
+        pass
+    # Default: no overrides; Wednesdays will be green by default in UI
+    return { 'date_colors': {} }
+
+def _save_schedule_settings(settings: dict) -> None:
+    with open(SCHEDULE_SETTINGS_FILE, 'w', encoding='utf-8') as f:
+        json.dump(settings, f, ensure_ascii=False, indent=2)
 
 @app.route('/')
 def home():
@@ -236,7 +253,28 @@ def admin_remove_user():
 
 @app.route('/dagskra')
 def dagskra():
-    return render_template('dagskra.html')
+    settings = _load_schedule_settings()
+    is_admin = (session.get('role') == ROLE_ADMIN)
+    return render_template('dagskra.html', is_admin=is_admin, date_colors=settings.get('date_colors', {}))
+
+@app.route('/admin/schedule/date_color', methods=['POST'])
+@require_roles(ROLE_ADMIN)
+def admin_schedule_date_color():
+    date_str = (request.form.get('date') or '').strip()
+    color = (request.form.get('color') or '').strip().lower()
+    # Only allow green/red or none (to clear)
+    allowed = {'none', 'green', 'red'}
+    if color not in allowed:
+        color = 'green'
+    settings = _load_schedule_settings()
+    dc = settings.get('date_colors') or {}
+    if color == 'none':
+        dc.pop(date_str, None)
+    else:
+        dc[date_str] = color
+    settings['date_colors'] = dc
+    _save_schedule_settings(settings)
+    return redirect(url_for('dagskra'))
 
 @app.route('/login', methods=['POST'])
 def login():

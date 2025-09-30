@@ -1,13 +1,133 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Dagskrá</title>
-</head>
-<body>
-  <h1>Dagskrá</h1>
-  <p>Coming soon. <a href="{{ url_for('home') }}">Back to home</a>.</p>
-</body>
-</html>
+﻿{% extends "base.html" %}
+{% block title %}Schedule{% endblock %}
+{% block content %}
+  <h1>Schedule</h1>
+  <section>
+    <div id="calendar" class="calendar"></div>
+  </section>
+  {% if is_admin %}
+  <section>
+    <p style="margin:6px 0; color:#555;">Admin: click a date to cycle color (green → red → none).</p>
+  </section>
+  {% endif %}
 
+  <script>
+    (function(){
+      const calEl = document.getElementById('calendar');
+      if (!calEl) return;
+
+      function pad(n){ return n < 10 ? '0'+n : ''+n; }
+
+      function renderCalendar(date){
+        const y = date.getFullYear();
+        const m = date.getMonth(); // 0-11
+
+        const first = new Date(y, m, 1);
+        const last = new Date(y, m + 1, 0);
+        const daysInMonth = last.getDate();
+        const startWeekday = first.getDay(); // 0=Sun .. 6=Sat
+
+        const monthName = first.toLocaleString(undefined, { month: 'long' });
+        let html = '';
+        html += '<div class="cal-header">'
+              +   '<button class="btn secondary" data-nav="-1" aria-label="Previous month">‹</button>'
+              +   '<div class="cal-title">' + monthName.charAt(0).toUpperCase() + monthName.slice(1) + ' ' + y + '</div>'
+              +   '<button class="btn secondary" data-nav="1" aria-label="Next month">›</button>'
+              + '</div>';
+        html += '<div class="cal-grid">';
+        const weekdayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+        for (let i=0;i<7;i++) html += '<div class="cal-cell cal-head">' + weekdayNames[i] + '</div>';
+
+        // leading blanks
+        for (let i=0;i<startWeekday;i++) html += '<div class="cal-cell cal-empty"></div>';
+
+        const dateColors = {{ (date_colors or {}) | tojson }}; // { 'YYYY-MM-DD': 'color' }
+        const IS_ADMIN = {{ 'true' if is_admin else 'false' }};
+        const today = new Date();
+        for (let d=1; d<=daysInMonth; d++){
+          const cur = new Date(y, m, d);
+          const wd = cur.getDay();
+          const isWed = (wd === 3);
+          const iso = y + '-' + pad(m+1) + '-' + pad(d);
+          const perDateColor = dateColors[iso];
+          const isToday = (cur.getFullYear()===today.getFullYear() && cur.getMonth()===today.getMonth() && cur.getDate()===today.getDate());
+          let cls = 'cal-cell cal-day';
+          if (isWed) cls += ' is-wed';
+          if (isToday) cls += ' is-today';
+          html += '<div class="' + cls + '" data-date="' + iso + '" data-wd="' + wd + '">' + d + '</div>';
+        }
+
+        html += '</div>';
+        calEl.innerHTML = html;
+
+        // Hook up navigation
+        calEl.querySelectorAll('[data-nav]')
+          .forEach(btn => btn.addEventListener('click', () => {
+            const step = parseInt(btn.getAttribute('data-nav'), 10) || 0;
+            const nd = new Date(y, m + step, 1);
+            renderCalendar(nd);
+          }));
+
+        // Apply default Wednesday green and per-date overrides
+        const cells = calEl.querySelectorAll('.cal-day');
+        cells.forEach(cell => {
+          const wd = parseInt(cell.getAttribute('data-wd'), 10);
+          const iso = cell.getAttribute('data-date');
+          if (wd === 3) {
+            cell.style.background = '#d7f7d7';
+            cell.style.borderColor = '#b6e7b6';
+          }
+            const c = dateColors[iso];
+          const map = { green:['#d7f7d7','#b6e7b6'], red:['#f7d7d7','#e7b6b6'] };
+          if (c && map[c]) { cell.style.background = map[c][0]; cell.style.borderColor = map[c][1]; }
+          if (c === 'none') { cell.style.background = ''; cell.style.borderColor = ''; }
+          if (IS_ADMIN) {
+            cell.style.cursor = 'pointer';
+            cell.title = 'Click to change color';
+            cell.addEventListener('click', () => {
+              const isoClick = cell.getAttribute('data-date');
+              const wdClick = parseInt(cell.getAttribute('data-wd'), 10);
+              const current = dateColors[isoClick] || (wdClick === 3 ? 'green' : 'none');
+              const next = current === 'none' ? 'green' : (current === 'green' ? 'red' : 'none');
+              // Update UI immediately
+              if (next === 'none') {
+                if (wdClick === 3) { cell.style.background = map.green[0]; cell.style.borderColor = map.green[1]; }
+                else { cell.style.background = ''; cell.style.borderColor = ''; }
+              } else {
+                cell.style.background = map[next][0];
+                cell.style.borderColor = map[next][1];
+              }
+              // Persist
+              const body = new URLSearchParams({ date: isoClick, color: next });
+              fetch('{{ url_for('admin_schedule_date_color') }}', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: body.toString()
+              }).catch(()=>{});
+              // Update local cache
+              dateColors[isoClick] = next;
+            });
+          }
+        });
+      }
+
+      // Basic styles injected for the calendar
+      const style = document.createElement('style');
+      style.textContent = `
+        .calendar { max-width: 720px; }
+        .cal-header { display:flex; align-items:center; justify-content:space-between; margin-bottom: 8px; }
+        .cal-title { font-weight: 700; font-size: 1.1rem; }
+        .cal-grid { display:grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+        .cal-cell { padding: 10px; border: 1px solid #ddd; border-radius: 8px; text-align: center; }
+        .cal-head { background: #f7f7f7; font-weight: 700; }
+        .cal-empty { border-color: transparent; }
+        .cal-day.is-today { outline: 2px solid #111; }
+      `;
+      document.head.appendChild(style);
+
+      renderCalendar(new Date());
+
+      // No separate editor UI; admin clicks dates directly.
+    })();
+  </script>
+{% endblock %}
