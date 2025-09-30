@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Info{% endblock %}
+{% block content %}
+  <h1>Pending Club Requests</h1>
+  {% if not proposals %}
+    <p>No pending requests.</p>
+  {% else %}
+    <div style="display:grid; gap:12px; max-width:820px;">
+      {% for p in proposals %}
+        <section style="border:1px solid #ddd; border-radius:8px; padding:12px;">
+          <h2 style="margin:0 0 8px 0; font-size:1.1rem;">{{ p.nafn }}</h2>
+          <div style="color:#555; margin-bottom:8px;">Stofa: {{ p.stofa or '—' }} • Leader: {{ p.formadur or '—' }} • By: {{ p.submitted_by }}</div>
+          <p style="margin:0 0 10px 0; white-space:pre-wrap;">{{ p.desc }}</p>
+          <div style="display:flex; gap:8px;">
+            <form method="post" action="{{ url_for('admin_proposal_approve', pid=p.id) }}">
+              <button class="btn" type="submit">Approve</button>
+            </form>
+            <form method="post" action="{{ url_for('admin_proposal_deny', pid=p.id) }}">
+              <button class="btn danger" type="submit">Deny</button>
+            </form>
+            <button class="btn secondary" type="button" title="Ask a question (coming soon)">Question</button>
+          </div>
+        </section>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endblock %}

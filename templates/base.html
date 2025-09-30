@@ -3,8 +3,9 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="static/styles.css"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}"/>
   <title>{% block title %} ENIAC {% endblock %}</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" defer></script>
 </head>
 <body>
   <header>
@@ -14,13 +15,16 @@
         <a href="{{ url_for('home') }}">Home</a>
         <a href="{{ url_for('klubbar') }}">Clubs</a>
         <a href="{{ url_for('dagskra') }}">Schedule</a>
+        {% if session.get('role') == 'admin' %}
+          <a class="btn" href="{{ url_for('info') }}" title="Info">Info</a>
+        {% endif %}
       </nav>
       {% block header_auth %}
         <span class="role-badge" aria-live="polite">{{ 'Admin' if session.get('role') == 'admin' else ('Student' if session.get('user') else 'Guest') }}</span>
 
         {% if session.get('user') %}
           <div class="profile-wrap">
-            <button id="profileBtn" class="profile-pill" aria-haspopup="menu" aria-expanded="false" title="{{ session.get('display_name', session['user']) }}">{{ session.get('display_name', session['user'])[:3]|upper }}</button>
+            <button id="profileBtn" class="profile-pill" aria-haspopup="menu" aria-expanded="false" title="{{ session.get('user') }}">{{ (session.get('user') or '?')[:1]|upper }}</button>
             <div id="profileMenu" class="profile-menu" role="menu" aria-label="Profile menu">
               <form method="post" action="{{ url_for('logout') }}">
                 <button class="profile-item" type="submit" role="menuitem">Log out</button>
@@ -114,6 +118,90 @@
         document.addEventListener('click', (e)=>{
           if (!profileWrap.contains(e.target)) toggleProfile(false);
         });
+      }
+    })();
+  </script>
+  <script>
+    // Animate-on-scroll using IntersectionObserver + anime.js (enter and exit)
+    (function(){
+      const ready = () => {
+        const items = document.querySelectorAll('[data-animate]');
+        if (!items.length) return;
+
+        function animateIn(el) {
+          const kind = el.getAttribute('data-animate');
+          const delay = parseInt(el.getAttribute('data-delay') || '0', 10);
+          el.classList.remove('will-animate');
+          if (window.anime) {
+            anime.remove(el);
+            if (kind === 'fade-up') {
+              anime({ targets: el, opacity: [0,1], translateY: [16,0], duration: 600, easing: 'easeOutQuad', delay });
+            } else if (kind === 'fade-in') {
+              anime({ targets: el, opacity: [0,1], duration: 500, easing: 'easeOutQuad', delay });
+            } else if (kind === 'scale-in') {
+              anime({ targets: el, opacity: [0,1], scale: [0.96,1], duration: 500, easing: 'easeOutQuad', delay });
+            } else {
+              anime({ targets: el, opacity: [0,1], duration: 500, easing: 'easeOutQuad', delay });
+            }
+          } else {
+            el.style.opacity = 1;
+            el.style.transform = 'none';
+          }
+        }
+
+        function animateOut(el) {
+          const kind = el.getAttribute('data-animate');
+          if (window.anime) {
+            anime.remove(el);
+            if (kind === 'fade-up') {
+              anime({ targets: el, opacity: [1,0], translateY: [0,16], duration: 400, easing: 'easeOutQuad', complete: ()=>{ el.classList.add('will-animate'); } });
+            } else if (kind === 'fade-in' || kind === 'scale-in') {
+              anime({ targets: el, opacity: [1,0], duration: 350, easing: 'easeOutQuad', complete: ()=>{ el.classList.add('will-animate'); el.style.transform = ''; } });
+            } else {
+              anime({ targets: el, opacity: [1,0], duration: 350, easing: 'easeOutQuad', complete: ()=>{ el.classList.add('will-animate'); } });
+            }
+          } else {
+            el.classList.add('will-animate');
+          }
+        }
+
+        const io = new IntersectionObserver((entries)=>{
+          entries.forEach(entry => {
+            const el = entry.target;
+            const visible = entry.isIntersecting && entry.intersectionRatio > 0.05;
+            if (visible) {
+              if (!el.__visible) {
+                el.__visible = true;
+                animateIn(el);
+              }
+            } else {
+              if (el.__visible) {
+                el.__visible = false;
+                animateOut(el);
+              }
+            }
+          });
+        }, { rootMargin: '0px 0px -10% 0px', threshold: [0, 0.05, 0.15] });
+
+        items.forEach((el) => {
+          // Stagger child list items if requested
+          if (el.hasAttribute('data-stagger-children')) {
+            const kids = el.querySelectorAll(el.getAttribute('data-stagger-children'));
+            kids.forEach((child, idx) => {
+              child.classList.add('will-animate');
+              child.setAttribute('data-animate', child.getAttribute('data-animate') || 'fade-up');
+              child.setAttribute('data-delay', String(idx * 80));
+              io.observe(child);
+            });
+          }
+          el.classList.add('will-animate');
+          io.observe(el);
+        });
+      };
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', ready);
+      } else {
+        ready();
       }
     })();
   </script>

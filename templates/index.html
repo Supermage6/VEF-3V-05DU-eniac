@@ -3,26 +3,26 @@
 
 {% block content %}
 <main>
-  <section aria-labelledby="welcome">
+  <section class="page-section" aria-labelledby="welcome" data-animate="fade-up">
     <h2 id="welcome">Welcome</h2>
     <p>This is the ENIAC front page. Sign in and other features will be added later.</p>
   </section>
 
-  <section aria-labelledby="announcements">
+  <section class="page-section" aria-labelledby="announcements" data-animate="fade-up" data-stagger-children="ul > li">
     <h2 id="announcements">Announcements</h2>
     <ul>
-      <li>Placeholder announcement one.</li>
-      <li>Placeholder announcement two.</li>
-      <li>Placeholder announcement three.</li>
+      <li data-animate="fade-up">Placeholder announcement one.</li>
+      <li data-animate="fade-up">Placeholder announcement two.</li>
+      <li data-animate="fade-up">Placeholder announcement three.</li>
     </ul>
   </section>
 
-  <section aria-labelledby="events">
+  <section class="page-section" aria-labelledby="events" data-animate="fade-up" data-stagger-children="ul > li">
     <h2 id="events">Upcoming</h2>
     <ul>
-      <li>Event A — 12:00</li>
-      <li>Event B — 15:00</li>
-      <li>Event C — 18:00</li>
+      <li data-animate="fade-up">Event A — 12:00</li>
+      <li data-animate="fade-up">Event B — 15:00</li>
+      <li data-animate="fade-up">Event C — 18:00</li>
     </ul>
   </section>
 </main>
