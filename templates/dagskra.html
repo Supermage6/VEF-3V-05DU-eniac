@@ -1,13 +1,123 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Dagskrá</title>
-</head>
-<body>
-  <h1>Dagskrá</h1>
-  <p>Coming soon. <a href="{{ url_for('home') }}">Back to home</a>.</p>
-</body>
-</html>
+﻿{% extends "base.html" %}
+{% block title %}Schedule{% endblock %}
+{% block content %}
+  <h1>Schedule</h1>
+  <section>
+    <div id="calendar" class="calendar"></div>
+  </section>
+  {% if is_admin %}
+  <section>
+    <button class="btn secondary" type="button" id="cal-edit-toggle" aria-expanded="false">Edit</button>
+    <form id="cal-edit-panel" method="post" action="{{ url_for('admin_schedule_highlight') }}" style="display:none; margin-top:8px; display:flex; gap:8px; align-items:center;">
+      <label>Highlight Wednesdays:
+        <select name="color">
+          <option value="green" {{ 'selected' if wed_color=='green' else '' }}>Green</option>
+          <option value="red" {{ 'selected' if wed_color=='red' else '' }}>Red</option>
+        </select>
+      </label>
+      <button class="btn" type="submit">Save</button>
+    </form>
+  </section>
+  {% endif %}
+
+  <script>
+    (function(){
+      const calEl = document.getElementById('calendar');
+      if (!calEl) return;
+
+      function pad(n){ return n < 10 ? '0'+n : ''+n; }
+
+      function renderCalendar(date){
+        const y = date.getFullYear();
+        const m = date.getMonth(); // 0-11
+
+        const first = new Date(y, m, 1);
+        const last = new Date(y, m + 1, 0);
+        const daysInMonth = last.getDate();
+        const startWeekday = first.getDay(); // 0=Sun .. 6=Sat
+
+        const monthName = first.toLocaleString(undefined, { month: 'long' });
+        let html = '';
+        html += '<div class="cal-header">'
+              +   '<button class="btn secondary" data-nav="-1" aria-label="Previous month">â€¹</button>'
+              +   '<div class="cal-title">' + monthName.charAt(0).toUpperCase() + monthName.slice(1) + ' ' + y + '</div>'
+              +   '<button class="btn secondary" data-nav="1" aria-label="Next month">â€º</button>'
+              + '</div>';
+        html += '<div class="cal-grid">';
+        const weekdayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+        for (let i=0;i<7;i++) html += '<div class="cal-cell cal-head">' + weekdayNames[i] + '</div>';
+
+        // leading blanks
+        for (let i=0;i<startWeekday;i++) html += '<div class="cal-cell cal-empty"></div>';
+
+        const today = new Date();
+        for (let d=1; d<=daysInMonth; d++){
+          const cur = new Date(y, m, d);
+          const wd = cur.getDay();
+          const isToday = (cur.getFullYear()===today.getFullYear() && cur.getMonth()===today.getMonth() && cur.getDate()===today.getDate());
+          let cls = 'cal-cell cal-day';
+          cls += ' wd-' + wd;
+          if (isToday) cls += ' is-today';
+          html += '<div class="' + cls + '" data-date="' + y + '-' + pad(m+1) + '-' + pad(d) + '">' + d + '</div>';
+        }
+
+        html += '</div>';
+        calEl.innerHTML = html;
+
+        // Hook up navigation
+        calEl.querySelectorAll('[data-nav]')
+          .forEach(btn => btn.addEventListener('click', () => {
+            const step = parseInt(btn.getAttribute('data-nav'), 10) || 0;
+            const nd = new Date(y, m + step, 1);
+            renderCalendar(nd);
+          }));
+      }
+
+      // Basic styles injected for the calendar
+        const style = document.createElement('style');
+        const weekdayColors = {{ (weekday_colors or {}) | tojson }};
+        const colorMap = {
+          none:  { bg: 'transparent', border: 'transparent' },
+          green: { bg: '#d7f7d7', border: '#b6e7b6' },
+          red:   { bg: '#f7d7d7', border: '#e7b6b6' },
+          blue:  { bg: '#d7e7f7', border: '#b6d0e7' },
+          yellow:{ bg: '#fff7cc', border: '#e7ddaa' },
+          purple:{ bg: '#ecd7f7', border: '#d6b6e7' },
+        };
+        let rules = `
+          .calendar { max-width: 720px; }
+          .cal-header { display:flex; align-items:center; justify-content:space-between; margin-bottom: 8px; }
+          .cal-title { font-weight: 700; font-size: 1.1rem; }
+          .cal-grid { display:grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+          .cal-cell { padding: 10px; border: 1px solid #ddd; border-radius: 8px; text-align: center; }
+          .cal-head { background: #f7f7f7; font-weight: 700; }
+          .cal-empty { border-color: transparent; }
+          .cal-day.is-today { outline: 2px solid #111; }
+        `;
+        for (let i=0;i<7;i++){
+          const col = weekdayColors[String(i)] || 'none';
+          const c = colorMap[col] || colorMap.none;
+          if (col !== 'none') {
+            rules += `.cal-day.wd-${i} { background: ${c.bg}; border-color: ${c.border}; }\n`;
+          }
+        }
+        style.textContent = rules;
+        document.head.appendChild(style);
+
+      renderCalendar(new Date());
+
+      // Admin toggle
+      const toggleBtn = document.getElementById('cal-edit-toggle');
+      const panel = document.getElementById('cal-edit-panel');
+      if (toggleBtn && panel) {
+        toggleBtn.addEventListener('click', () => {
+          const open = panel.style.display === 'none' ? false : true;
+          const next = !open;
+          panel.style.display = next ? 'flex' : 'none';
+          toggleBtn.setAttribute('aria-expanded', String(next));
+        });
+      }
+    })();
+  </script>
+{% endblock %}
 

@@ -27,6 +27,7 @@ def _save_users(users: dict):
 
 CLUBS_FILE = 'klubbar.json'
 PROPOSALS_FILE = 'proposals.json'
+SCHEDULE_SETTINGS_FILE = 'schedule_settings.json'
 
 _DEFAULT_CLUBS = [
     {'nafn': 'Fighting Game Klúbbur', 'stofa': '203', 'formadur': 'Matt', 'desc': 'Klúbbur fyrir alla sem hafa áhuga á bardaga tölvuleikjum.'},
@@ -65,6 +66,24 @@ def _load_proposals():
 def _save_proposals(items: list):
     with open(PROPOSALS_FILE, 'w', encoding='utf-8') as f:
         json.dump(items, f, ensure_ascii=False, indent=2)
+
+def _load_schedule_settings() -> dict:
+    try:
+        with open(SCHEDULE_SETTINGS_FILE, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+            if isinstance(data, dict):
+                return data
+    except (FileNotFoundError, json.JSONDecodeError):
+        pass
+    # Default: highlight Wednesdays in green
+    return {
+        'wed_color': 'green',
+        'weekday_colors': { '3': 'green' }  # 0=Sun .. 6=Sat
+    }
+
+def _save_schedule_settings(settings: dict) -> None:
+    with open(SCHEDULE_SETTINGS_FILE, 'w', encoding='utf-8') as f:
+        json.dump(settings, f, ensure_ascii=False, indent=2)
 
 @app.route('/')
 def home():
@@ -236,7 +255,38 @@ def admin_remove_user():
 
 @app.route('/dagskra')
 def dagskra():
-    return render_template('dagskra.html')
+    settings = _load_schedule_settings()
+    is_admin = (session.get('role') == ROLE_ADMIN)
+    return render_template(
+        'dagskra.html',
+        wed_color=settings.get('wed_color', 'green'),
+        weekday_colors=settings.get('weekday_colors', {}),
+        is_admin=is_admin,
+    )
+
+@app.route('/admin/schedule/highlight', methods=['POST'])
+@require_roles(ROLE_ADMIN)
+def admin_schedule_highlight():
+    color = (request.form.get('color') or '').strip().lower()
+    if color not in {'green', 'red'}:
+        color = 'green'
+    settings = _load_schedule_settings()
+    settings['wed_color'] = color
+    _save_schedule_settings(settings)
+    return redirect(url_for('dagskra'))
+
+@app.route('/admin/schedule/colors', methods=['POST'])
+@require_roles(ROLE_ADMIN)
+def admin_schedule_colors():
+    allowed = {'none', 'green', 'red', 'blue', 'yellow', 'purple'}
+    colors = {}
+    for i in range(7):
+        val = (request.form.get(f'color_{i}') or 'none').strip().lower()
+        colors[str(i)] = val if val in allowed else 'none'
+    settings = _load_schedule_settings()
+    settings['weekday_colors'] = colors
+    _save_schedule_settings(settings)
+    return redirect(url_for('dagskra'))
 
 @app.route('/login', methods=['POST'])
 def login():
