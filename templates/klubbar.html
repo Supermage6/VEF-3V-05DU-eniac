@@ -47,6 +47,7 @@
   // Floor map + hotspots overlay
   const CLUBS = {{ (k or []) | tojson }};
   const IS_ADMIN = {{ 'true' if is_admin else 'false' }};
+  
   (function() {
     const mapEl = document.getElementById('floor-map');
     const mapBox = document.getElementById('map-box');
