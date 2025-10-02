@@ -28,6 +28,10 @@
   {% if is_admin %}
     <a class="admin-edit-btn" href="{{ url_for('klubbar_edit') }}" title="Edit clubs">Edit</a>
   {% endif %}
+
+<script id="page-data" type="application/json">
+  {{ {'clubs': (k or []), 'is_admin': is_admin} | tojson }}
+</script>
 <script>
   const acc = document.getElementsByClassName("accordion");
   for (let i = 0; i < acc.length; i++) {
@@ -44,9 +48,10 @@
     });
   }
 
-  // Floor map + hotspots overlay
-  const CLUBS = {{ (k or []) | tojson }};
-  const IS_ADMIN = {{ 'true' if is_admin else 'false' }};
+  // floor map + hotspots overlay
+  const PAGE_DATA = JSON.parse(document.getElementById('page-data').textContent || '{}');
+  const CLUBS = PAGE_DATA.clubs || [];
+  const IS_ADMIN = Boolean(PAGE_DATA.is_admin);
   
   (function() {
     const mapEl = document.getElementById('floor-map');
