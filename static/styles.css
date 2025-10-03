@@ -2,7 +2,8 @@
 * { box-sizing: border-box; }
 body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; line-height: 1.5; }
 header { padding: var(--gap); border-bottom: 1px solid #ddd; display: flex; align-items: center; }
-.brand { font-size: 1.8rem; font-weight: 700; letter-spacing: .04em; }
+.brand { font-size: 1.8rem; font-weight: 700; letter-spacing: .04em; display:flex; align-items:center; gap:8px; }
+.brand-logo { height: 28px; width: auto; display: inline-block; border-radius: 4px; }
 .header-actions { margin-left: auto; display: flex; align-items: center; gap: 12px; }
 /* Role label next to login/profile */
 .role-badge { font-weight: 700; font-size: .9rem; padding: 4px 10px; border: 1px solid #ddd; border-radius: 999px; background: #f7f7f7; color: #333; }
@@ -39,13 +40,7 @@ footer { padding: var(--gap); text-align: center; font-size: .9rem; color: #555;
 /* Reveal-on-scroll initial state */
 .will-animate { opacity: 0; transform: translateY(16px); }
 
-/* Full-screen sections for homepage */
-.page-section {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
+/* Homepage sections appear as simple boxed cards (no full-height) */
 
 /* Homepage layout helpers (removed) */
 
@@ -208,21 +203,3 @@ footer { padding: var(--gap); text-align: center; font-size: .9rem; color: #555;
     border-radius: 6px;
 }
 .profile-item:hover { background: #f4f4f4; }
-
-/* Dark theme */
-body.theme-dark { background: #121212; color: #eee; }
-body.theme-dark header { border-bottom-color: #333; }
-body.theme-dark nav a { color: #eee; }
-body.theme-dark .role-badge { background: #1f1f1f; color: #eee; border-color: #444; }
-body.theme-dark footer { border-top-color: #333; color: #aaa; }
-body.theme-dark section { background: #1e1e1e; border-color: #333; }
-body.theme-dark .modal-dialog { background: #222; color: #eee; }
-body.theme-dark .profile-menu { background: #222; border-color: #444; }
-body.theme-dark .btn.secondary { background: #222; color: #eee; border-color: #555; }
-body.theme-dark .btn.secondary:hover { background: #2a2a2a; }
-body.theme-dark .accordion { color: #eee; }
-body.theme-dark .active, body.theme-dark .accordion:hover { background-color: #333; }
-body.theme-dark .panel { background-color: #1b1b1b; }
-body.theme-dark .admin-edit-btn { background: #333; border-color: #666; }
-body.theme-dark .admin-edit-btn:hover { background: #444; }
-body.theme-dark .hotspot::after { background: #222; }

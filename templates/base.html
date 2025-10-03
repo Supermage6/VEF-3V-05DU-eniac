@@ -9,7 +9,7 @@
 </head>
 <body>
   <header>
-    <div class="brand">ENIAC</div>
+    <div class="brand"><img class="brand-logo" src="{{ url_for('static', filename='logo.png') }}" alt="ENIAC logo"/>ENIAC</div>
     <div class="header-actions">
       <nav aria-label="Main">
         <a href="{{ url_for('home') }}">Home</a>
@@ -25,12 +25,11 @@
         {% if session.get('user') %}
           <div class="profile-wrap">
             <button id="profileBtn" class="profile-pill" aria-haspopup="menu" aria-expanded="false" title="{{ session.get('user') }}">{{ (session.get('user') or '?')[:1]|upper }}</button>
-              <div id="profileMenu" class="profile-menu" role="menu" aria-label="Profile menu">
-                <button id="themeToggle" class="profile-item" type="button" role="menuitem">Dark mode</button>
-                <form method="post" action="{{ url_for('logout') }}">
-                  <button class="profile-item" type="submit" role="menuitem">Log out</button>
-                </form>
-              </div>
+                <div id="profileMenu" class="profile-menu" role="menu" aria-label="Profile menu">
+                  <form method="post" action="{{ url_for('logout') }}">
+                    <button class="profile-item" type="submit" role="menuitem">Log out</button>
+                  </form>
+                </div>
           </div>
         {% else %}
           <a id="loginBtn" class="btn" href="#login" aria-label="Log in">Log in</a>
@@ -76,20 +75,7 @@
         const modal = document.getElementById('loginModal');
         const profileBtn = document.getElementById('profileBtn');
         const profileWrap = profileBtn ? profileBtn.closest('.profile-wrap') : null;
-        const themeToggleBtn = document.getElementById('themeToggle');
-        let lastFocused = null;
-
-        // Theme handling
-        function applyTheme(theme){
-          document.body.classList.toggle('theme-dark', theme === 'dark');
-          try { localStorage.setItem('theme', theme); } catch(e){}
-          if (themeToggleBtn) themeToggleBtn.textContent = (theme === 'dark') ? 'Light mode' : 'Dark mode';
-        }
-        (function initTheme(){
-          let theme = 'light';
-          try { theme = localStorage.getItem('theme') || 'light'; } catch(e){}
-          applyTheme(theme);
-        })();
+          let lastFocused = null;
 
       function openModal(e){
         if (e) e.preventDefault();
@@ -133,13 +119,7 @@
             if (!profileWrap.contains(e.target)) toggleProfile(false);
           });
         }
-        if (themeToggleBtn) {
-          themeToggleBtn.addEventListener('click', ()=>{
-            const next = document.body.classList.contains('theme-dark') ? 'light' : 'dark';
-            applyTheme(next);
-          });
-        }
-      })();
+        })();
 
     (function() {
     var s = document.createElement('script');s.type='text/javascript';s.async=true;s.id='lsInitScript';
