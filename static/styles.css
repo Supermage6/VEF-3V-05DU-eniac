@@ -5,11 +5,9 @@ header { padding: var(--gap); border-bottom: 1px solid #ddd; display: flex; alig
 .brand { font-size: 1.8rem; font-weight: 700; letter-spacing: .04em; }
 .header-actions { margin-left: auto; display: flex; align-items: center; gap: 12px; }
 /* Role label next to login/profile */
-.role-badge { font-weight: 700; font-size: .9rem; padding: 4px 10px; border: 1px solid #ddd; border-radius: 999px; background: #f7f7f7; color: #333; }
+.role-badge { font-weight: 800; font-size: .9rem; padding: 4px 10px; border-radius: 5px; background: lightgray;}
 nav { display: flex; gap: 12px; }
 nav a { text-decoration: none; color: inherit; padding: 4px 8px; border-radius: 6px; }
-.btn { appearance: none; border: 1px solid #333; background: #111; color: #fff; padding: 6px 12px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: .95rem; }
-.btn:hover { background: #000; }
 main { max-width: var(--max); margin: 0 auto; padding: var(--gap); display: flex; flex-direction: column; gap: var(--gap); }
 section { padding: 12px; border: 1px solid #ddd; border-radius: 8px; }
 section h2 { margin: 0 0 8px; font-size: 1.1rem; }
@@ -94,6 +92,13 @@ footer { padding: var(--gap); text-align: center; font-size: .9rem; color: #555;
     /* Expanded state */
     opacity: 1;
     padding: 12px 18px;
+}
+
+.club-grid {
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 16px;
+    margin: 2em;
 }
 
 /* Admin edit button bottom-left on Clubs */
