@@ -12,6 +12,11 @@ nav a { text-decoration: none; color: inherit; padding: 4px 8px; border-radius: 
 .btn { appearance: none; border: 1px solid #333; background: #111; color: #fff; padding: 6px 12px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: .95rem; }
 .btn:hover { background: #000; }
 main { max-width: var(--max); margin: 0 auto; padding: var(--gap); display: flex; flex-direction: column; gap: var(--gap); }
+/* Home grid: two cards per row on wider screens */
+.home-grid { display: grid; grid-template-columns: repeat(2, minmax(260px, 1fr)); gap: var(--gap); }
+@media (max-width: 760px) {
+  .home-grid { grid-template-columns: 1fr; }
+}
 section { padding: 12px; border: 1px solid #ddd; border-radius: 8px; }
 section h2 { margin: 0 0 8px; font-size: 1.1rem; }
 ul { margin: 0; padding-left: 18px; }
