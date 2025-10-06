@@ -19,7 +19,7 @@
         <a class="ui secondary tertiary button" href="{{ url_for('klubbar') }}">Clubs</a>
         <a class="ui secondary tertiary button" href="{{ url_for('dagskra') }}">Schedule</a>
         {% if session.get('role') == 'admin' %}
-          <a class="btn" href="{{ url_for('info') }}" title="Info">Info</a>
+          <a class="ui secondary tertiary button" href="{{ url_for('info') }}" title="Info">Info</a>
         {% endif %}
       </nav>
       {% block header_auth %}
