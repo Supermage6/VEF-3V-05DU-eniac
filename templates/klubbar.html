@@ -59,10 +59,10 @@
     if (!mapEl || !mapBox) return;
     const btn1 = mapBox.nextElementSibling;
     const btn2 = btn1 ? btn1.nextElementSibling : null;
-    const floorSrc = {
-      '2': "{{ url_for('static', filename='floor-2.png') }}",
-      '3': "{{ url_for('static', filename='floor-3.png') }}",
-    };
+      const floorSrc = {
+        '2': "{{ url_for('static', filename='floor-2.png') }}",
+        '3': "{{ url_for('static', filename='floor-3.png') }}",
+      };
     const Y_OFFSET = { '2': 3, '3': 3 };
     let hotspotsData = null;
     let currentFloor = '2';
