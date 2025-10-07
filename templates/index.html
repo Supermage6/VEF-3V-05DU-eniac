@@ -26,7 +26,15 @@
       <li data-animate="fade-up">Event C — 18:00</li>
     </ul>
   </section>
+
+  {% if is_student or is_admin %}
+  <section aria-labelledby="discord" data-animate="fade-up">
+    <h2 id="discord">Discord</h2>
+    <p>Join the official ENIAC Discord server to chat with other students and order pizza :]</p>
+    <a class="btn" href="https://discord.gg/eniac" target="_blank" rel="noopener">Join Discord</a>
   </section>
+  {% endif %}
+
   </div>
 </main>
 {% endblock %}

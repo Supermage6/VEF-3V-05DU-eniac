@@ -85,7 +85,8 @@ def _save_schedule_settings(settings: dict) -> None:
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    return render_template('index.html', is_student=(session.get('role') == 'student'),
+                           is_admin=(session.get('role') == 'admin'))
 
 @app.route('/klubbar')
 def klubbar():
