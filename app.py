@@ -67,6 +67,7 @@ def _save_proposals(items: list):
     with open(PROPOSALS_FILE, 'w', encoding='utf-8') as f:
         json.dump(items, f, ensure_ascii=False, indent=2)
 
+# --- Schedule settings (per-date colors) ---
 def _load_schedule_settings() -> dict:
     try:
         with open(SCHEDULE_SETTINGS_FILE, 'r', encoding='utf-8') as f:
@@ -75,11 +76,8 @@ def _load_schedule_settings() -> dict:
                 return data
     except (FileNotFoundError, json.JSONDecodeError):
         pass
-    # Default: highlight Wednesdays in green
-    return {
-        'wed_color': 'green',
-        'weekday_colors': { '3': 'green' }  # 0=Sun .. 6=Sat
-    }
+    # Default: no overrides; Wednesdays will be green by default in UI
+    return { 'date_colors': {} }
 
 def _save_schedule_settings(settings: dict) -> None:
     with open(SCHEDULE_SETTINGS_FILE, 'w', encoding='utf-8') as f:
@@ -87,7 +85,8 @@ def _save_schedule_settings(settings: dict) -> None:
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    return render_template('index.html', is_student=(session.get('role') == 'student'),
+                           is_admin=(session.get('role') == 'admin'))
 
 @app.route('/klubbar')
 def klubbar():
@@ -257,34 +256,24 @@ def admin_remove_user():
 def dagskra():
     settings = _load_schedule_settings()
     is_admin = (session.get('role') == ROLE_ADMIN)
-    return render_template(
-        'dagskra.html',
-        wed_color=settings.get('wed_color', 'green'),
-        weekday_colors=settings.get('weekday_colors', {}),
-        is_admin=is_admin,
-    )
+    return render_template('dagskra.html', is_admin=is_admin, date_colors=settings.get('date_colors', {}))
 
-@app.route('/admin/schedule/highlight', methods=['POST'])
+@app.route('/admin/schedule/date_color', methods=['POST'])
 @require_roles(ROLE_ADMIN)
-def admin_schedule_highlight():
+def admin_schedule_date_color():
+    date_str = (request.form.get('date') or '').strip()
     color = (request.form.get('color') or '').strip().lower()
-    if color not in {'green', 'red'}:
+    # Only allow green/red or none (to clear)
+    allowed = {'none', 'green', 'red'}
+    if color not in allowed:
         color = 'green'
     settings = _load_schedule_settings()
-    settings['wed_color'] = color
-    _save_schedule_settings(settings)
-    return redirect(url_for('dagskra'))
-
-@app.route('/admin/schedule/colors', methods=['POST'])
-@require_roles(ROLE_ADMIN)
-def admin_schedule_colors():
-    allowed = {'none', 'green', 'red', 'blue', 'yellow', 'purple'}
-    colors = {}
-    for i in range(7):
-        val = (request.form.get(f'color_{i}') or 'none').strip().lower()
-        colors[str(i)] = val if val in allowed else 'none'
-    settings = _load_schedule_settings()
-    settings['weekday_colors'] = colors
+    dc = settings.get('date_colors') or {}
+    if color == 'none':
+        dc.pop(date_str, None)
+    else:
+        dc[date_str] = color
+    settings['date_colors'] = dc
     _save_schedule_settings(settings)
     return redirect(url_for('dagskra'))
 

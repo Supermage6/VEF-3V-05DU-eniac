@@ -2,7 +2,8 @@
 * { box-sizing: border-box; }
 body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; line-height: 1.5; }
 header { padding: var(--gap); border-bottom: 1px solid #ddd; display: flex; align-items: center; }
-.brand { font-size: 1.8rem; font-weight: 700; letter-spacing: .04em; }
+.brand { font-size: 1.8rem; font-weight: 700; letter-spacing: .04em; display:flex; align-items:center; gap:8px; }
+.brand-logo { height: 28px; width: auto; display: inline-block; border-radius: 4px; }
 .header-actions { margin-left: auto; display: flex; align-items: center; gap: 12px; }
 /* Role label next to login/profile */
 .role-badge { font-weight: 700; font-size: .9rem; padding: 4px 10px; border: 1px solid #ddd; border-radius: 999px; background: #f7f7f7; color: #333; }
@@ -11,6 +12,11 @@ nav a { text-decoration: none; color: inherit; padding: 4px 8px; border-radius: 
 .btn { appearance: none; border: 1px solid #333; background: #111; color: #fff; padding: 6px 12px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: .95rem; }
 .btn:hover { background: #000; }
 main { max-width: var(--max); margin: 0 auto; padding: var(--gap); display: flex; flex-direction: column; gap: var(--gap); }
+/* Home grid: two cards per row on wider screens */
+.home-grid { display: grid; grid-template-columns: repeat(2, minmax(260px, 1fr)); gap: var(--gap); }
+@media (max-width: 760px) {
+  .home-grid { grid-template-columns: 1fr; }
+}
 section { padding: 12px; border: 1px solid #ddd; border-radius: 8px; }
 section h2 { margin: 0 0 8px; font-size: 1.1rem; }
 ul { margin: 0; padding-left: 18px; }
@@ -39,13 +45,7 @@ footer { padding: var(--gap); text-align: center; font-size: .9rem; color: #555;
 /* Reveal-on-scroll initial state */
 .will-animate { opacity: 0; transform: translateY(16px); }
 
-/* Full-screen sections for homepage */
-.page-section {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
+/* Homepage sections appear as simple boxed cards (no full-height) */
 
 /* Homepage layout helpers (removed) */
 

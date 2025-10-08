@@ -3,12 +3,13 @@
 
 {% block content %}
 <main>
-  <section class="page-section" aria-labelledby="welcome" data-animate="fade-up">
+  <div class="home-grid">
+  <section aria-labelledby="welcome" data-animate="fade-up">
     <h2 id="welcome">Welcome</h2>
     <p>This is the ENIAC front page. Sign in and other features will be added later.</p>
   </section>
 
-  <section class="page-section" aria-labelledby="announcements" data-animate="fade-up" data-stagger-children="ul > li">
+  <section aria-labelledby="announcements" data-animate="fade-up" data-stagger-children="ul > li">
     <h2 id="announcements">Announcements</h2>
     <ul>
       <li data-animate="fade-up">Placeholder announcement one.</li>
@@ -17,7 +18,7 @@
     </ul>
   </section>
 
-  <section class="page-section" aria-labelledby="events" data-animate="fade-up" data-stagger-children="ul > li">
+  <section aria-labelledby="events" data-animate="fade-up" data-stagger-children="ul > li">
     <h2 id="events">Upcoming</h2>
     <ul>
       <li data-animate="fade-up">Event A — 12:00</li>
@@ -25,6 +26,16 @@
       <li data-animate="fade-up">Event C — 18:00</li>
     </ul>
   </section>
+
+  {% if is_student or is_admin %}
+  <section aria-labelledby="discord" data-animate="fade-up">
+    <h2 id="discord">Discord</h2>
+    <p>Join the official ENIAC Discord server to chat with other students and order pizza :]</p>
+    <a class="btn" href="https://discord.gg/eniac" target="_blank" rel="noopener">Join Discord</a>
+  </section>
+  {% endif %}
+
+  </div>
 </main>
 {% endblock %}
 

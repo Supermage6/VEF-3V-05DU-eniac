@@ -1,3 +1,7 @@
 {
-  "wed_color": "green"
+
+  "date_colors": {
+    "2025-09-17": "red",
+    "2025-09-24": "red"
+  }
 }
