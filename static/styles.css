@@ -14,8 +14,33 @@ nav a { text-decoration: none; color: inherit; padding: 4px 8px; border-radius: 
 main { max-width: var(--max); margin: 0 auto; padding: var(--gap); display: flex; flex-direction: column; gap: var(--gap); }
 /* Home grid: two cards per row on wider screens */
 .home-grid { display: grid; grid-template-columns: repeat(2, minmax(260px, 1fr)); gap: var(--gap); }
+
 @media (max-width: 760px) {
-  .home-grid { grid-template-columns: 1fr; }
+  :root { --max: 100%; }
+
+  header { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .brand { font-size: 1.3rem; }
+  .header-actions { margin-left: 0; width: 100%; justify-content: space-between; gap: 8px; }
+  nav { flex-wrap: wrap; gap: 8px; }
+
+  main { padding: 12px; }
+  .home-grid { grid-template-columns: 1fr; gap: 12px; padding: 0 8px; }
+
+  #map-box { width: 100% !important; max-width: 100%; }
+  #map-box img, #floor-map { max-width: 100%; height: auto; display: block; }
+
+  .btn { padding: 10px 12px; font-size: 1rem; }
+  .admin-edit-btn { position: static; margin-top: 8px; display: inline-block; }
+
+  form[style*="position: fixed"] { position: static !important; right: auto !important; bottom: auto !important; }
+
+  .calendar { max-width: 100%; }
+  .cal-grid { gap: 4px; }
+  .cal-title { font-size: 1rem; }
+
+  .modal-dialog { width: calc(100% - 32px); max-width: 480px; margin: 24px auto; }
+
+  .panel { transition: max-height .25s ease; overflow: hidden; }
 }
 section { padding: 12px; border: 1px solid #ddd; border-radius: 8px; }
 section h2 { margin: 0 0 8px; font-size: 1.1rem; }
@@ -208,3 +233,4 @@ footer { padding: var(--gap); text-align: center; font-size: .9rem; color: #555;
     border-radius: 6px;
 }
 .profile-item:hover { background: #f4f4f4; }
+
