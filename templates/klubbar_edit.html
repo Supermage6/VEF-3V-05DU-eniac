@@ -73,122 +73,62 @@
     </div>
   </section>
 
-  <script>
-    // Map editor (admin)
-    (function() {
-      const CLUBS = {{ k | tojson }};
-      const mapEl = document.getElementById('floor-map');
-      const mapBox = document.getElementById('map-box');
-      const saveBtn = document.getElementById('save-map');
-      const saveStatus = document.getElementById('save-status');
-      if (!mapEl || !mapBox || !saveBtn) return;
+<script id="page-data" type="application/json">
+{{ {
+  'clubs': (k or []),
+  'floor2': url_for('static', filename='floor-2.png'),
+  'floor3': url_for('static', filename='floor-3.png')
+} | tojson }}
+</script>
 
-      const floorButtons = document.querySelectorAll('[data-floor]');
-      const floorSrc = {
-        '2': "{{ url_for('static', filename='floor-2.png') }}",
-        '3': "{{ url_for('static', filename='floor-3.png') }}",
-      };
-      // Vertical nudge for visual alignment
-      const Y_OFFSET = { '2': 3, '3': 3 };
+<script>
+  (function() {
+    const PAGE_DATA = JSON.parse(document.getElementById('page-data').textContent || '{}');
+    const CLUBS = PAGE_DATA.clubs || [];
+    const mapEl = document.getElementById('floor-map');
+    const mapBox = document.getElementById('map-box');
+    const saveBtn = document.getElementById('save-map');
+    const saveStatus = document.getElementById('save-status');
+    if (!mapEl || !mapBox || !saveBtn) return;
 
-      let data = null; // map_rooms.json contents
-      let currentFloor = '2';
-      let dirty = false;
+    const floorButtons = document.querySelectorAll('[data-floor]');
+    const floorSrc = { '2': PAGE_DATA.floor2, '3': PAGE_DATA.floor3 };
+    const Y_OFFSET = { '2': 3, '3': 3 };
 
-      function setDirty(val) {
-        dirty = val;
-        saveBtn.disabled = !dirty;
-        saveStatus.textContent = dirty ? 'Unsaved changes' : '';
-      }
+    let data = null;
+    let currentFloor = '2';
+    let dirty = false;
 
-      function clearHotspots() {
-        mapBox.querySelectorAll('.hotspot').forEach(n => n.remove());
-      }
+    function setDirty(val) { /* ...existing code... */ }
+    function clearHotspots() { mapBox.querySelectorAll('.hotspot').forEach(n => n.remove()); }
+    function clubForRoom(roomCode) {
+      const rc = (roomCode || '').toString().trim().toLowerCase();
+      return CLUBS.find(c => (c.stofa || '').toString().trim().toLowerCase() === rc) || null;
+    }
 
-      function clubForRoom(roomCode) {
-        const rc = (roomCode || '').toString().trim().toLowerCase();
-        return CLUBS.find(c => (c.stofa || '').toString().trim().toLowerCase() === rc) || null;
-      }
+    function renderHotspots(floor) { /* ...existing code... */ }
+    function setFloor(n) { /* ...existing code... */ }
 
-      function renderHotspots(floor) {
-        clearHotspots();
-        if (!data || !data.floors) return;
-        const items = data.floors[floor] || [];
-        items.forEach(item => {
-          const el = document.createElement('div');
-          const roomCode = (item.room || '').toString();
-          const club = clubForRoom(roomCode);
-          el.className = 'hotspot' + (club ? ' assigned' : ' unassigned');
-          const y = (item.y || 0) + (Y_OFFSET[floor] || 0);
-          el.style.left = (item.x || 0) + '%';
-          el.style.top = y + '%';
-          el.setAttribute('data-label', (item.room ? ('Stofa ' + item.room + ' - ') : '') + (club ? (club.nafn || '') : 'Óhlúthlutað'));
-          el.title = club ? (club.nafn || '') : '';
-          mapBox.appendChild(el);
+    floorButtons.forEach(btn => btn.addEventListener('click', () => setFloor(btn.dataset.floor)));
 
-          // Dragging
-          el.addEventListener('pointerdown', (ev) => {
-            el.setPointerCapture(ev.pointerId);
-            const list = data.floors[currentFloor] || [];
-            const idx = list.findIndex(r => (r.room || '').toString() === roomCode);
-            const onMove = (e) => {
-              const rect = mapBox.getBoundingClientRect();
-              let nx = ((e.clientX - rect.left) / rect.width) * 100;
-              let ny = ((e.clientY - rect.top) / rect.height) * 100;
-              nx = Math.max(0, Math.min(100, nx));
-              ny = Math.max(0, Math.min(100, ny));
-              el.style.left = nx + '%';
-              el.style.top = ny + '%';
-              if (idx >= 0) {
-                list[idx].x = parseFloat(nx.toFixed(2));
-                list[idx].y = parseFloat((ny - (Y_OFFSET[currentFloor] || 0)).toFixed(2));
-                setDirty(true);
-              }
-            };
-            const onUp = () => {
-              el.releasePointerCapture(ev.pointerId);
-              window.removeEventListener('pointermove', onMove);
-              window.removeEventListener('pointerup', onUp);
-            };
-            window.addEventListener('pointermove', onMove);
-            window.addEventListener('pointerup', onUp);
-          });
-        });
-      }
+    saveBtn.addEventListener('click', () => {
+      if (!data) return;
+      saveBtn.disabled = true;
+      saveStatus.textContent = 'Saving';
+      fetch("{{ url_for('admin_map_save') }}", {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      }).then(r => {
+        if (r.ok) { setDirty(false); saveStatus.textContent = 'Saved'; setTimeout(() => saveStatus.textContent = '', 1500); }
+        else { saveStatus.textContent = 'Save failed'; }
+      }).catch(() => { saveStatus.textContent = 'Save failed'; });
+    });
 
-      function setFloor(n) {
-        currentFloor = (n in floorSrc) ? n : '2';
-        mapEl.src = floorSrc[currentFloor];
-        renderHotspots(currentFloor);
-        floorButtons.forEach(btn => btn.setAttribute('aria-pressed', btn.dataset.floor === currentFloor ? 'true' : 'false'));
-      }
-
-      floorButtons.forEach(btn => btn.addEventListener('click', () => setFloor(btn.dataset.floor)));
-
-      saveBtn.addEventListener('click', () => {
-        if (!data) return;
-        saveBtn.disabled = true;
-        saveStatus.textContent = 'Saving';
-        fetch("{{ url_for('admin_map_save') }}", {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
-        }).then(r => {
-          if (r.ok) {
-            setDirty(false);
-            saveStatus.textContent = 'Saved';
-            setTimeout(() => saveStatus.textContent = '', 1500);
-          } else {
-            saveStatus.textContent = 'Save failed';
-          }
-        }).catch(() => { saveStatus.textContent = 'Save failed'; });
-      });
-
-      // Load existing positions
-      fetch("{{ url_for('static', filename='map_rooms.json') }}")
-        .then(r => r.json())
-        .then(json => { data = json; renderHotspots(currentFloor); })
-        .catch(() => {});
-    })();
-  </script>
+    fetch("{{ url_for('static', filename='map_rooms.json') }}")
+      .then(r => r.json())
+      .then(json => { data = json; renderHotspots(currentFloor); })
+      .catch(() => {});
+  })();
+</script>
 {% endblock %}
