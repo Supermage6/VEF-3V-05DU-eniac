@@ -22,7 +22,7 @@ Designed for clarity and convenience, ENIAC.is ensures that students never have 
 
 ## User Scenarios
 
-**Who:**. **What:**. **Why:**.
+A student enjoys attending different clubs and wants to know whether or not there is a club night this Wednesday. They open the website on their phone, tap "Schedule" in the navigation menu, and views a calendar with upcoming Wednesdays, showing marked club nights and cancellations. This way, they can plan their afternoon accordingly and arrive on time to participate.
 
 ## Wireflow
 <img width="1879" height="1318" alt="Untitled" src="https://github.com/user-attachments/assets/3e7a21bf-d72f-49e7-b277-272054904df7" />
