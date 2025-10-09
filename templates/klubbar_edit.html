@@ -5,21 +5,22 @@
     <form class="create-user-inline" method="post" action="{{ url_for('admin_create_user') }}">
       <input type="text" name="username" placeholder="New username" required style="padding:6px 10px; border:1px solid #ccc; border-radius:8px;">
       <input type="password" name="password" placeholder="Password" required style="padding:6px 10px; border:1px solid #ccc; border-radius:8px;">
-      <select name="role" style="padding:6px 10px; border:1px solid #ccc; border-radius:8px;">
+      <select name="role" class="ui dropdown" style="padding:6px 10px; border:1px solid #ccc; border-radius:8px;">
         <option value="student">Student</option>
         <option value="admin">Admin</option>
       </select>
-      <button class="btn" type="submit">Create user</button>
+      <button class="ui button" type="submit">Create user</button>
     </form>
     <form class="remove-user-inline" method="post" action="{{ url_for('admin_remove_user') }}">
       <input type="text" name="username" placeholder="Username to remove" required style="padding:6px 10px; border:1px solid #ccc; border-radius:8px;">
-      <button class="btn danger" type="submit" onclick="return confirm('Remove this user?');">Remove user</button>
+      <button class="ui red small button" type="submit" onclick="return confirm('Remove this user?');">Remove user</button>
     </form>
   </div>
 {% endblock %}
 {% block content %}
-  <h1>Edit Clubs</h1>
-  <form method="post" action="{{ url_for('klubbar_edit') }}" class="edit-club-form">
+<div style="margin:2em;">
+  <h1 style="margin-bottom:20px;">Edit Clubs</h1>
+  <form method="post" action="{{ url_for('klubbar_edit') }}" class="ui form edit-club-form">
     {% for i in range(k|length) %}
       {% set c = k[i] %}
       <fieldset style="border:1px solid #ddd; border-radius:8px; padding:12px;">
@@ -47,15 +48,15 @@
             <div style="color:#666; font-size:.9rem;">Room: {{ c.stofa }} • Leader: {{ c.formadur }}</div>
             <form method="post" action="{{ url_for('klubbar_remove') }}" onsubmit="return confirm('Are you sure you want to remove this club?');">
               <input type="hidden" name="idx" value="{{ i }}" />
-              <button class="btn danger" type="submit">Remove</button>
+              <button class="ui red small button" type="submit">Remove</button>
             </form>
           </div>
         </div>
       </fieldset>
     {% endfor %}
     <div style="display:flex; gap:10px;">
-      <button class="btn" type="submit">Save changes</button>
-      <a class="btn secondary" href="{{ url_for('klubbar') }}">Cancel</a>
+      <button class="ui button" style="margin-top:5px;" type="submit">Save changes</button>
+      <a class="ui secondary button" style="margin-top:5px;" href="{{ url_for('klubbar') }}">Cancel</a>
     </div>
   </form>
 
@@ -66,12 +67,13 @@
       <img id="floor-map" src="{{ url_for('static', filename='floor-2.png') }}" alt="Floor plan" style="max-width:100%; height:auto; display:block;"/>
     </div>
     <div style="display:flex; gap:8px; align-items:center; margin-top:8px;">
-      <button type="button" class="btn secondary" data-floor="2" aria-pressed="true">Hæð 2</button>
-      <button type="button" class="btn secondary" data-floor="3" aria-pressed="false">Hæð 3</button>
-      <button type="button" class="btn" id="save-map">Save map</button>
+      <button type="button" class="ui small secondary button" data-floor="2" aria-pressed="true">Hæð 2</button>
+      <button type="button" class="ui small secondary button" data-floor="3" aria-pressed="false">Hæð 3</button>
+      <button type="button" class="ui small primary button" id="save-map">Save map</button>
       <span id="save-status" style="margin-left:8px; color:#666; font-size:.9rem;"></span>
     </div>
   </section>
+</div>
 
   <script>
     // Map editor (admin)
