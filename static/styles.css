@@ -87,6 +87,7 @@ footer { padding: var(--gap); text-align: center; font-size: .9rem; color: #555;
 .panel.open {
     /* Expanded state */
     opacity: 1;
+    min-height: 120px;
     padding: 12px 18px;
 }
 
