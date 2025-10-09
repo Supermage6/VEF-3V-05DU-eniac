@@ -1,11 +1,11 @@
 # ENIAC.IS
 
-**Íslenska**
+### Íslenska
 ENIAC.is er vefsíða fyrir allt sem tengist klúbbakvöldum Tækniskólans - einfaldar upplifuna með auðveldum aðgangi að upplýsingum um viðburði, klúbba, tylkinningar og samskipti, allt á einum stað. Engin þörf á samfélagsmiðlum.
 
 Hönnuð með skýrleika og þægindi í huga tryggir ENIAC.is að nemendur þurfi aldrei að leita að úreltum upplýsingum á mörgum mismunandi stöðum. Klúbbar og viðburðir geta verið stjórnaðir beint í gegnum síðuna, sem gerir skipulagningu og þáttöku bæði sýnilegri, aðgengilegri og skemmtilegri fyrir alla.
 
-**English**
+### English
 ENIAC.is is a central platform for everything related to Tækniskólinn's weekly club nights - streamlining the experience with easy access to event details, club activites, announcements, and communication tools, all in one place. No social media required.
 
 Designed for clarity and convenience, ENIAC.is ensures that students never have to hunt for outdated information across multiple platforms. Clubs and events can be managed directly through the site, making organization and participation more visible, accessible, and fun for everyone.
