@@ -1,8 +1,9 @@
 {% extends "base.html" %}
 {% block title %}Create Club Request{% endblock %}
 {% block content %}
+<div style="margin:2em; display:grid; gap:12px; max-width:720px; position:relative;">
   <h1>Create Club Request</h1>
-  <form method="post" action="{{ url_for('klubbar_propose') }}" style="display:grid; gap:12px; max-width:720px; position:relative;">
+  <form method="post" action="{{ url_for('klubbar_propose') }}" class="ui form">
     <label class="field">
       <span>Name</span>
       <input type="text" name="nafn" required placeholder="Club name" />
@@ -19,9 +20,10 @@
       <span>Description</span>
       <textarea name="desc" rows="4" placeholder="Brief description" style="width:100%;"></textarea>
     </label>
+</div>
 
     <div style="position: fixed; right: 16px; bottom: 16px;">
-      <button class="btn" type="submit">Create Request</button>
+      <button class="ui primary button" type="submit">Create Request</button>
     </div>
   </form>
 {% endblock %}
