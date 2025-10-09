@@ -15,11 +15,10 @@ Designed for clarity and convenience, ENIAC.is ensures that students never have 
 
 ## User stories
 
-1. As a student, I want to know when 
-2. As a user, I want to speak to a council member, so I can start a club.
-3. As a club owner, I want to manage my club, so I can change classrooms.
-4. As a DM, I want to manage my members, so I can approve certain members.
-5. As a parent/public user, I want to know what clubs are available, so my child/I can find common interests.
+1. As a student, I want to view the schedule of club nights so that I can plan ahead and arrive on time.
+2. As a user interested in starting a club, I want to contact a council member so that I can understand the process and get approval.
+3. As a club owner, I want to manage my club's details, such as the classroom, so that I can keep members informed.
+4. As a parent or public visitor, I want to browse available clubs so that I or my child can find groups that match our interests. 
 
 ## User Scenarios
 
