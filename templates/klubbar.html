@@ -39,13 +39,7 @@
     acc[i].addEventListener("click", function () {
       this.classList.toggle("active");
       const panel = this.nextElementSibling;
-      const willOpen = !panel.classList.contains("open");
       panel.classList.toggle("open");
-      if (willOpen) {
-        panel.style.maxHeight = panel.scrollHeight + "px";
-      } else {
-        panel.style.maxHeight = null;
-      }
     });
   }
 

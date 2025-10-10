@@ -88,6 +88,8 @@ footer { padding: var(--gap); text-align: center; font-size: .9rem; color: #555;
     /* Expanded state */
     opacity: 1;
     padding: 12px 18px;
+    /* Allow the panel to expand fully without being limited by inline JS */
+    max-height: 1000px; /* sufficiently large for content */
 }
 
 .club-grid {
