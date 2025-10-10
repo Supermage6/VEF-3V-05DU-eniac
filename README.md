@@ -28,9 +28,11 @@ A student enjoys attending different clubs and wants to know whether or not ther
 <img width="1879" height="1318" alt="Untitled" src="https://github.com/user-attachments/assets/3e7a21bf-d72f-49e7-b277-272054904df7" />
 
 ## Screenshots
-Tækniskólinn.
-  VEFÞ3VÞ05DU-Hát.
-  Nöfn:
-  Knútur þór.
-  Reginn.
-  Hunter.
+
+
+  #### Tækniskólinn.
+  #### VEFÞ3VÞ05DU-Hát.
+  #### Nöfn:
+  #### Knútur þór.
+  #### Reginn.
+  #### Hunter.
