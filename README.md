@@ -29,6 +29,9 @@ A student enjoys attending different clubs and wants to know whether or not ther
 
 ## Screenshots
 
+<img width="1854" height="915" alt="image" src="https://github.com/user-attachments/assets/928b9b87-fb0a-4249-ae08-64d9ab203851" />
+
+
 
   #### Tækniskólinn.
   #### VEFÞ3VÞ05DU-Hát.
