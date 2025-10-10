@@ -29,8 +29,8 @@ A student enjoys attending different clubs and wants to know whether or not ther
 
 ## Screenshots
 Tækniskólinn.
-VEFÞ3VÞ05DU-Hát.
-Nöfn:
-Knútur þór.
-Reginn.
-Hunter.
+  VEFÞ3VÞ05DU-Hát.
+  Nöfn:
+  Knútur þór.
+  Reginn.
+  Hunter.
